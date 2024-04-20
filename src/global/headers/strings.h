@@ -22,9 +22,27 @@ typedef struct
     char *version;        // OS version
     char *created_at;     // OS created date
     char *updated_at;     // OS updated date
+    char *init;           // OS init (Initial text displayed in the console of the OS)
     Author author;        // OS author
 } OsTrademark;
 
+typedef struct
+{
+    char *name;         // Name of the command
+    char *desc;         // Description of the command
+    void (*func)(void); // Function pointer to the command
+} Command;
+
+typedef struct
+{
+    char *school;
+    char *course;
+    char *lecturer;
+    char *submitted_by;
+    char *declaration;
+} Acknowledgement;
+
 extern OsTrademark os_inf;
+extern Acknowledgement ack;
 
 #endif // STRINGS_H

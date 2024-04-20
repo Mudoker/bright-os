@@ -1,6 +1,8 @@
 #include "../headers/strings.h"
 #include <stdio.h>
 #include <string.h>
+#include "../../helper/formater.c"
+#include "../../helper/boxer.c"
 
 OsTrademark os_inf = {
     .ascii_art_name =
@@ -11,7 +13,7 @@ OsTrademark os_inf = {
 
         "                                                         mrrm\n"
         "                                                         rrrr\n"
-        "                                                        mrrrr\n"
+        "                                                         mrrrr\n"
         "                                                        rrrrrm\n"
         "                                                        mrrrrrr\n"
         "                                                       mrrrrrrrr\n"
@@ -39,7 +41,6 @@ OsTrademark os_inf = {
         "\n"
         "\n"
         "\n"
-        "\n"
         "                     rrrrrrrrrrrr   mrrrrrrrrrrrrr  rrrrm rrrrrrrrrrrr  rrrr      rrrrmrrrrrrrrrrrrr\n"
         "                     rrrmrrrrrrrrr  mrrrrrrrrrrrrrr rrrrmrrrrrrrrrrrrm  rrrr      rrrrmrrrrrrrrrrrrr\n"
         "                     rrrm     mrrri mrrrr      mrrr rrrrirrrrm          rrrmiiiiiirrrrr    mrrrr\n"
@@ -60,52 +61,57 @@ OsTrademark os_inf = {
         .email = "huuquoc7603@gmail.com",
         .sid = "S3927776",
     },
+    .init = "BrightOS> ",
 };
 
-void print_in_box(const char *text)
-{
-    int length = strlen(text);
-    int width = length + 4; // Width of the box
-    int i, j;
+Acknowledgement ack = {
+    .school = "RMIT University",
+    .course = "EEET2490: Embedded System: OS and Interfacing",
+    .lecturer = "Mr Linh T.D.",
+    .submitted_by = "Quoc Doan",
+    .declaration = "I declare that in submitting all work for this assessment I have read, understood and agree to the content and expectations of the Assessment declaration.",
+};
 
-    // Print the top of the box
-    for (i = 0; i < width; i++)
-    {
-        printf("-");
-    }
+void OS_Greet()
+{
+    int color = 33;
+    char *color_string = "yellow";
+
+    format_and_print(os_inf.asii_art_logo, color_string, 0, 0);
     printf("\n");
 
-    // Print the sides of the box with text in the middle
-    printf("| %s |\n", text);
-
-    // Print the bottom of the box
-    for (i = 0; i < width; i++)
-    {
-        printf("-");
-    }
-    printf("\n");
-}
-
-int main()
-{
     // OS Information
-    printf("%s", os_inf.asii_art_logo);
-    printf("\n");
     print_in_box("OS Information");
-    printf("ID           : %s\n", os_inf.id);
-    printf("OS Name      : %s\n", os_inf.name);
-    printf("Version      : %s\n", os_inf.version);
-    printf("Home URL     : %s\n", os_inf.home_url);
-    printf("Support URL  : %s\n", os_inf.support_url);
-    printf("Created At   : %s\n", os_inf.created_at);
-    printf("Last Updated : %s\n", os_inf.updated_at);
+    printf("\033[0;%dmID\033[0m           : %s\n", color, os_inf.id);
+    printf("\033[0;%dmOS Name\033[0m      : %s\n", color, os_inf.name);
+    printf("\033[0;%dmVersion\033[0m      : %s\n", color, os_inf.version);
+    printf("\033[0;%dmHome URL\033[0m     : %s\n", color, os_inf.home_url);
+    printf("\033[0;%dmSupport URL\033[0m  : %s\n", color, os_inf.support_url);
+    printf("\033[0;%dmCreated At\033[0m   : %s\n", color, os_inf.created_at);
+    printf("\033[0;%dmLast Updated\033[0m : %s\n", color, os_inf.updated_at);
 
     printf("\n");
 
     // Author Information
     print_in_box("Author Information");
-    printf("Name     : %s\n", os_inf.author.name);
-    printf("Username : %s\n", os_inf.author.username);
-    printf("SID      : %s\n", os_inf.author.sid);
-    printf("Email    : %s\n", os_inf.author.email);
+    printf("\033[0;%dmName\033[0m     : %s\n", color, os_inf.author.name);
+    printf("\033[0;%dmUsername\033[0m : %s\n", color, os_inf.author.username);
+    printf("\033[0;%dmSID\033[0m      : %s\n", color, os_inf.author.sid);
+    printf("\033[0;%dmEmail\033[0m    : %s\n", color, os_inf.author.email);
+
+    printf("\n");
+
+    // Copyright
+    print_in_box("Acknowledgement");
+    printf("School of Science, Engineering and Technology\n\n");
+    printf("\033[0;%dmSchool\033[0m     : %s\n", color, ack.school);
+    printf("\033[0;%dmCourse\033[0m     : %s\n", color, ack.course);
+    printf("\033[0;%dmLecturer\033[0m   : %s\n", color, ack.lecturer);
+    printf("\033[0;%dmSubmitted by\033[0m: %s\n\n", color, ack.submitted_by);
+    printf("\033[3m%s\033[0m\n", ack.declaration);
+
+    printf("\n%s", os_inf.ascii_art_name);
+    printf("\n %s @2024. All rights reserved.\n\n", os_inf.author.username);
+
+    return;
 }

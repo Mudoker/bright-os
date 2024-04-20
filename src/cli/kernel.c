@@ -37,8 +37,6 @@ int main()
 	// uart_puts("Hello World!\n");
 
 	// run CLI
-	printf(">>> Running CLI...\n");
-	printf(">>> Done!\n");
 
 	OS_Greet();
 

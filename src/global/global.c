@@ -1,6 +1,6 @@
 #include "./global.h"
 
-OS_INF = {
+OsTrademark OS_INF = {
     .ascii_art_name =
         "  ______ _______ ___   _     ______   ______  _____  ______ _     _ _______\n"
         "   ____/ |______ |  \\  |     |_____] |_____/    |   |  ____ |_____|    |\n"
@@ -60,7 +60,7 @@ OS_INF = {
     .init = "BrightOS> ",
 };
 
-ACK = {
+Acknowledgement ACK = {
     .school = "RMIT University",
     .course = "EEET2490: Embedded System: OS and Interfacing",
     .lecturer = "Mr Linh T.D.",
@@ -68,7 +68,7 @@ ACK = {
     .declaration = "I declare that in submitting all work for this assessment I have read, understood and agree to the content and expectations of the Assessment declaration.",
 };
 
-COLOR = {
+Color COLOR = {
     .RED = "\033[0;31m",
     .GREEN = "\033[0;32m",
     .YELLOW = "\033[0;33m",
@@ -78,7 +78,7 @@ COLOR = {
     .DEFAULT = "\033[0;33m",
 };
 
-STYLER = {
+Styler STYLER = {
     .BOLD_ON = "\033[1m",
     .ITALIC_ON = "\033[3m",
     .UNDERLINE_ON = "\033[4m",

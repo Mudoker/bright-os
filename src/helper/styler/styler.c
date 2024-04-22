@@ -1,6 +1,7 @@
 #include "../../global/global.h"
 #include "../utils/utils.h"
 #include "./styler.h"
+#include "../../uart/uart.h"
 
 // Function to format string with color and print it
 char *str_format(const char *str, const char *color_code, int style)
@@ -43,6 +44,31 @@ char *str_format(const char *str, const char *color_code, int style)
     concat(formatted_str, style_code);
     concat(formatted_str, color_code);
     concat(formatted_str, str);
+    concat(formatted_str, "\033[0m");
 
     return formatted_str;
+}
+
+// Print text in box
+void print_in_box(char *str)
+{
+    // Print the formatted string in a box
+    uart_puts("\n");
+    uart_puts("+");
+    for (int i = 0; i < len(str) + 2; i++)
+    {
+        uart_puts("-");
+    }
+    uart_puts("+\n");
+
+    uart_puts("| ");
+    uart_puts(str);
+    uart_puts(" |\n");
+
+    uart_puts("+");
+    for (int i = 0; i < len(str) + 2; i++)
+    {
+        uart_puts("-");
+    }
+    uart_puts("+\n");
 }

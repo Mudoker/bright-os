@@ -2,6 +2,8 @@
     "files.associations": {
         "xstring": "c",
         "global.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "styler.h": "c",
+        "utils.h": "c"
     }
 }

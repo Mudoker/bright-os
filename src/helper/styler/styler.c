@@ -4,7 +4,7 @@
 #include "../../uart/uart.h"
 
 // Function to format string with color and print it
-char *str_format(const char *str, const char *color_code, int style)
+char *str_format(char *str, const char *color_code, int style)
 {
     if (str == 0 || color_code == 0)
     {
@@ -40,11 +40,15 @@ char *str_format(const char *str, const char *color_code, int style)
         return ("Memory allocation failed\n");
     }
 
+    formatted_str[0] = '\0';
+
     // Concatenate the style code, color code and the string
     concat(formatted_str, style_code);
     concat(formatted_str, color_code);
     concat(formatted_str, str);
     concat(formatted_str, "\033[0m");
+
+    formatted_str[len(formatted_str)] = '\0';
 
     return formatted_str;
 }

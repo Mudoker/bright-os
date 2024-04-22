@@ -13,16 +13,7 @@ UART_DIR = ./src/uart
 GLOBAL_DIR = ./src/global
 HELPER_DIR = ./src/helper
 BUILD_DIR = ./build
-
-# C files
-CFILES = $(wildcard $(CLI_DIR)/*.c)
-CFILES += $(wildcard $(UART_DIR)/*.c)
-CFILES += $(wildcard $(GLOBAL_DIR)/*.c)
-CFILES += $(wildcard $(HELPER_DIR)/styler/*.c)
-CFILES += $(wildcard $(HELPER_DIR)/utils/*.c)
-
-#S files
-SFILES = $(wildcard $(CLI_DIR)/*.S)
+COMMANDS_DIR = ./src/commands
 
 # Object files
 OFILES := $(patsubst $(CLI_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.c))
@@ -31,6 +22,7 @@ OFILES += $(patsubst $(GLOBAL_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(GLOBAL_DIR)
 OFILES += $(patsubst $(HELPER_DIR)/styler/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELPER_DIR)/styler/*.c))
 OFILES += $(patsubst $(HELPER_DIR)/utils/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELPER_DIR)/utils/*.c))
 OFILES += $(patsubst $(CLI_DIR)/%.S,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.S))
+OFILES += $(patsubst $(COMMANDS_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(COMMANDS_DIR)/*.c))
 
 # Compiler
 GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
@@ -59,8 +51,11 @@ $(BUILD_DIR)/%.o: $(HELPER_DIR)/styler/%.c
 $(BUILD_DIR)/%.o: $(HELPER_DIR)/utils/%.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
+$(BUILD_DIR)/%.o: $(COMMANDS_DIR)/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+
 kernel_brightos.img: $(OFILES)
-	@echo BUILDING PROJECTS... $(CFILES)
+	@echo BUILDING PROJECTS...
 	$(LD) $(LDFLAGS) $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel_brightos.elf
 	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel_brightos.elf $@
 

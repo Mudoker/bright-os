@@ -1,5 +1,6 @@
 #include "../uart/uart.h"
 #include "../global/global.h"
+#include "../commands/os.h"
 
 #define MAX_CMD_SIZE 100
 
@@ -40,9 +41,9 @@ int main()
 	uart_init();
 
 	// run CLI
-	char *cli_buffer = "Hello World!\n";
-	uart_puts(cli_buffer);
-
+	// char *cli_buffer = "Hello World!\n";
+	// uart_puts(cli_buffer);
+	os_greet();
 	while (1)
 	{
 		cli();

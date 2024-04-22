@@ -7,6 +7,6 @@ int main()
 {
     char *text = "Hello, World!";
     // char *formatted_text = str_format(text, COLOR.RED, 1);
-    printf("%s\n", COLOR.RED);
+    printf("%s\n", text);
     return 0;
 }

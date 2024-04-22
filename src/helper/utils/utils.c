@@ -20,7 +20,7 @@ int strcmp(char *str1, char *str2)
     return 0;
 }
 
-int strlen(char *str)
+int len(const char *str)
 {
     // Get the length of the string
     int len = 0;
@@ -35,7 +35,7 @@ int strlen(char *str)
 int concat(char *dest, const char *src)
 {
     // Get the length of the destination string
-    int dest_len = strlen(dest);
+    int dest_len = len(dest);
 
     // Concatenate the source string to the destination string to the end
     int i = 0;

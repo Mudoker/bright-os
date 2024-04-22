@@ -1,11 +1,11 @@
-#include "../global/global.h"
-#include "./utils.h"
+#include "../../global/global.h"
+#include "../utils/utils.h"
 #include "./styler.h"
 
 // Function to format string with color and print it
-char *str_format(char *str, const char *color_code, int style)
+char *str_format(const char *str, const char *color_code, int style)
 {
-    if (str == '\0' || color_code == '\0')
+    if (str == 0 || color_code == 0)
     {
         return '\0'; // Invalid input
     }
@@ -32,9 +32,10 @@ char *str_format(char *str, const char *color_code, int style)
         style_code = STYLER.UNDERLINE_ON;
     }
 
-    int formatted_len = strlen(style_code) + strlen(color_code) + strlen(str) + 1; // +1 for null terminator
+    int formatted_len = len(style_code) + len(color_code) + len(str) + 1; // +1 for null terminator
 
-    char *formatted_str = (char *)malloc(formatted_len);
+    static char formatted_str[MAX_STR_LEN];
+
     if (formatted_str == '\0')
     {
         return ("Memory allocation failed\n");

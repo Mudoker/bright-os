@@ -1,51 +1,71 @@
 #--------------------------------------Makefile-------------------------------------
-CFILES = $(wildcard ./src/*.c)
-#CFILES = "./src/kernel.c"
 
-OFILES = $(CFILES:./src/%.c=./build/%.o)
-#OFILES = "./build/kernel.o"
+# Compiler
+CC = aarch64-none-elf-gcc
+LD = aarch64-none-elf-ld
+OBJCOPY = aarch64-none-elf-objcopy
+CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
+LDFLAGS = -nostdlib
 
+# Directories
+CLI_DIR = ./src/cli
+UART_DIR = ./src/uart
+GLOBAL_DIR = ./src/global
+HELPER_DIR = ./src/helper
+BUILD_DIR = ./build
+
+# C files
+CFILES = $(wildcard $(CLI_DIR)/*.c)
+CFILES += $(wildcard $(UART_DIR)/*.c)
+CFILES += $(wildcard $(GLOBAL_DIR)/*.c)
+CFILES += $(wildcard $(HELPER_DIR)/styler/*.c)
+CFILES += $(wildcard $(HELPER_DIR)/utils/*.c)
+
+#S files
+SFILES = $(wildcard $(CLI_DIR)/*.S)
+
+# Object files
+OFILES := $(patsubst $(CLI_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.c))
+OFILES += $(patsubst $(UART_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(UART_DIR)/*.c))
+OFILES += $(patsubst $(GLOBAL_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(GLOBAL_DIR)/*.c))
+OFILES += $(patsubst $(HELPER_DIR)/styler/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELPER_DIR)/styler/*.c))
+OFILES += $(patsubst $(HELPER_DIR)/utils/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELPER_DIR)/utils/*.c))
+OFILES += $(patsubst $(CLI_DIR)/%.S,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.S))
+
+# Compiler
 GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
 LDFLAGS = -nostdlib
 
-all: clean kernel8.img run
+# Targets
+.PHONY: all clean run
 
-#Check UART0 or UART1 define from make process
-# To build uart1, type "make UART1=1"
-# To build uart0, type "make UART0=1"
+all: clean kernel_brightos.img run
 
-#UART0 = 1
+$(BUILD_DIR)/%.o: $(CLI_DIR)/%.S
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-# ifdef UART0
-# UARTTYPE = 0
-# else #UART1
-# UARTTYPE = 1
-# endif
+$(BUILD_DIR)/%.o: $(CLI_DIR)/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-#Create UART0 or UART1 preprocessing define
-#Syntax: add -DVAR to compiler's flag will create #define VAR
-GCCFLAGS += -DUART$(UARTTYPE)
+$(BUILD_DIR)/%.o: $(UART_DIR)/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-#GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -DUART1
-#The makefile will generate the #define UART1
+$(BUILD_DIR)/%.o: $(GLOBAL_DIR)/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-./build/boot.o: ./src/boot.S
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $< -o $@
+$(BUILD_DIR)/%.o: $(HELPER_DIR)/styler/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-./build/uart.o:
-	aarch64-none-elf-gcc $(GCCFLAGS) -c ./src/uart/uart.c -o $@
+$(BUILD_DIR)/%.o: $(HELPER_DIR)/utils/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-./build/%.o: ./src/%.c
-#./build/kernel.o: ./src/kernel.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $< -o $@
-
-kernel8.img: ./build/boot.o ./build/uart.o $(OFILES)
-	@echo UART$(UARTTYPE) IS BUILDING !!!
-	aarch64-none-elf-ld $(LDFLAGS) ./build/boot.o ./build/uart.o $(OFILES)  -T ./src/link.ld -o ./build/kernel8.elf
-	aarch64-none-elf-objcopy -O binary ./build/kernel8.elf kernel8.img
+kernel_brightos.img: $(OFILES)
+	@echo BUILDING PROJECTS... $(CFILES)
+	$(LD) $(LDFLAGS) $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel_brightos.elf
+	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel_brightos.elf $@
 
 clean:
 	del *.img .\build\*.elf .\build\*.o
 
 run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
+	qemu-system-aarch64 -M raspi3 -kernel kernel_brightos.img -serial stdio

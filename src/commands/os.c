@@ -1,6 +1,7 @@
 #include "os.h"
 #include "../global/global.h"
 #include "../helper/styler/styler.h"
+#include "../helper/utils/utils.h"
 
 void os_greet() {
   uart_puts("\n");
@@ -110,4 +111,55 @@ void os_greet() {
   uart_puts("\n");
 
   uart_puts("@2024. All rights reserved.\n\n");
+}
+
+// As per limitations of bare-metal programming, the stack is implemented as
+// using a fixed-size array
+// Command stack methods
+void push_command(struct CommandStack *stack, char *command) {
+  // Check if the stack is full
+  if (stack->top_index == MAX_LEN_HIST - 1) {
+    // Shift the stack to the left
+    for (int i = 0; i < MAX_LEN_HIST - 1; i++) {
+    }
+  } else {
+    // Increment the top index
+    stack->top_index++;
+  }
+
+  // Copy the command to the top of the stack
+  copy(stack->command[stack->top_index], command);
+}
+
+void pop_command(struct CommandStack *self) {
+  // Check if the stack is empty
+  if (self->top_index == -1) {
+    return;
+  }
+
+  // Decrement the top index
+  self->top_index--;
+}
+
+void get_command(struct CommandStack *self) {
+  // Check if the stack is empty
+  if (self->top_index == -1) {
+    return;
+  }
+
+  // Get the command at the top of the stack
+  uart_puts(self->command[self->top_index]);
+}
+
+void get_all_commands(struct CommandStack *stack) {
+  // Check if the stack is empty
+  if (stack->top_index == -1) {
+    return;
+  }
+
+  // Print all commands in the stack
+  for (int i = 0; i <= stack->top_index; i++) {
+    uart_puts(stack->command[i]);
+    uart_puts("\n");
+  }
 }

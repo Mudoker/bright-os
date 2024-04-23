@@ -45,3 +45,14 @@ int concat(char *dest, const char *src) {
 
   return 1; // Indicates success
 }
+
+char *copy(char *destination, const char *source) {
+  char *start = destination;
+  while (*source != '\0') {
+    *destination = *source;
+    destination++;
+    source++;
+  }
+  *destination = '\0'; // Null-terminate the destination string
+  return start;
+}

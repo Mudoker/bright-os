@@ -3,8 +3,9 @@
 #include "../helper/styler/styler.h"
 #include "../helper/utils/utils.h"
 
-char *commands[] = {"os",       "help", "clr",      "cls",  "clear",  "hist",
-                    "setcolor", "ref",  "showinfo", "auth", (char *)0};
+char *commands[] = {"os",   "help",     "help <name>", "clr/cls/clear",
+                    "hist", "setcolor", "ref",         "showinfo",
+                    "auth", (char *)0};
 
 void os_greet() {
   uart_puts("\n");

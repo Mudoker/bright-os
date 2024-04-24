@@ -55,7 +55,7 @@ void cli() {
       history_index = command_stack.top_index;
 
     // Navigate command history
-    if (c == '+' && history_index >= 0) {
+    if (c == '_' && history_index >= 0) {
       clear_current_command();
 
       if (was_down) {
@@ -69,7 +69,7 @@ void cli() {
       index = len(cli_buffer);
       uart_puts(cli_buffer);
 
-    } else if (c == '_' && history_index <= command_stack.top_index) {
+    } else if (c == '+' && history_index <= command_stack.top_index) {
       was_down = 1;
 
       // Move forward in history (towards older commands)

@@ -3,6 +3,9 @@
 #include "../helper/styler/styler.h"
 #include "../helper/utils/utils.h"
 
+char *commands[] = {"os",       "help", "clr",      "cls",  "clear",  "hist",
+                    "setcolor", "ref",  "showinfo", "auth", (char *)0};
+
 void os_greet() {
   uart_puts("\n");
   uart_puts("Triggering OS...\n");
@@ -160,7 +163,6 @@ void initialize_values(char *values[MAX_ROWS][MAX_ROWS], int rows) {
 void show_help(char *command) {
   char *keys[] = {"Command", "Description"};
   char *values[MAX_ROWS][MAX_ROWS];
-  char *commands[MAX_ROWS] = {0};
   char *commands_desc[MAX_ROWS][MAX_ROWS];
 
   // Ref: Help command on Linux
@@ -172,17 +174,6 @@ void show_help(char *command) {
 
   initialize_values(values, 11);        // Initialize the values array
   initialize_values(commands_desc, 11); // Initialize the commands_desc array
-
-  commands[0] = "os";
-  commands[1] = "help";
-  commands[2] = "help [command]";
-  commands[3] = "clr / cls / clear";
-  commands[4] = "hist";
-  commands[5] = "setcolor";
-  commands[6] = "ref";
-  commands[7] = "showinfo";
-  commands[8] = "auth";
-  commands[9] = (char *)0;
 
   commands_desc[0][0] = "Show OS information";
   commands_desc[1][0] = "Show all commands";
@@ -258,6 +249,21 @@ void show_help(char *command) {
   }
 
   tabulate(keys, 2, values, num_rows);
+}
+
+// Auto-complete command
+char *autocomplete_command(char *buffer) {
+  if (len(buffer) == 0) {
+    return (char *)0;
+  }
+
+  for (int i = 0; commands[i] != (char *)0; i++) {
+    if (starts_with(commands[i], buffer)) {
+      return commands[i];
+    }
+  }
+
+  return (char *)0;
 }
 
 // Parse and execute command

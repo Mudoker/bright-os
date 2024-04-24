@@ -22,5 +22,6 @@ void push_command(struct CommandStack *stack, char *command);
 void pop_command(struct CommandStack *stack);
 void get_command(struct CommandStack *stack);
 void get_all_commands(struct CommandStack *stack);
+char *autocomplete_command(char *buffer);
 
 #endif

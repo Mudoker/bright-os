@@ -56,3 +56,20 @@ char *copy(char *destination, const char *source) {
   *destination = '\0'; // Null-terminate the destination string
   return start;
 }
+
+// Check if the string starts with the prefix
+int starts_with(char *str, char *prefix) {
+  if (str == (char *)0 || prefix == (char *)0 || len(str) < len(prefix))
+    return 0;
+
+  // Check if the string starts with the prefix
+  while (*prefix) {
+    if (*prefix != *str) {
+      return 0;
+    }
+    prefix++;
+    str++;
+  }
+
+  return 1;
+}

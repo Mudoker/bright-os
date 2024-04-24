@@ -22,14 +22,12 @@ void cli() {
 
   // Show prompt only if new command
   if (is_new_command) {
+    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+      cli_buffer[i] = '\0';
+    }
     uart_puts("\n");
-
-    // Show prompt
     str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR);
-
     is_new_command = 0;
-
-    // Reset history index
     history_index = -1;
   }
 
@@ -42,6 +40,15 @@ void cli() {
       index--;
       cli_buffer[index] = '\0';
       uart_puts("\b \b");
+    }
+  } else if (c == '\t') { // Tab key pressed
+    // Autocomplete command
+    char *completed_command = autocomplete_command(cli_buffer);
+    if (completed_command != (char *)0) {
+      clear_current_command();
+      copy(cli_buffer, completed_command);
+      index = len(cli_buffer);
+      uart_puts(cli_buffer);
     }
   } else if (c == '+' || c == '_') {
     if (history_index == -1)

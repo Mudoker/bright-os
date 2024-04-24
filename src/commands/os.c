@@ -226,7 +226,7 @@ void show_help(char *command) {
 
   // Display commands in tabular format
   int num_rows = 0;
-  if (is_equal(command, "all") == 0) {
+  if (is_equal(command, "all")) {
     for (int i = 0; commands[i] != (char *)0; i++) {
       values[i][0] = commands[i];
       num_rows++;
@@ -239,7 +239,7 @@ void show_help(char *command) {
     // Display help for a specific command
     int i;
     for (i = 0; commands[i] != (char *)0; i++) {
-      if (is_equal(command, commands[i]) == 0) {
+      if (is_equal(command, commands[i])) {
         values[0][0] = commands[i];
         values[0][1] = commands_desc[i][0];
         num_rows++;
@@ -293,20 +293,25 @@ void parse_command(char *input) {
     } else {
       show_help(help_command);
     }
-  } else if (is_equal(command, "os")) {
+  } else if (is_equal(command, "os")) { // Show OS information
     os_greet();
   } else if (is_equal(command, "clr") || is_equal(command, "cls") ||
-             is_equal(command, "clear")) {
-    uart_puts("\033c"); // Full terminal reset
+             is_equal(command, "clear")) { // Clear the terminal
+    // Clear the terminal
+    uart_puts("\033c");
   } else if (is_equal(command, "hist")) {
+    // Show command history
     uart_puts("\n");
   } else if (is_equal(command, "setcolor")) {
-    char element[MAX_CMD] = {0};
-    char type[MAX_CMD] = {0};
-    char color[MAX_CMD] = {0};
+    // Change color of OS
+    char element[MAX_CMD] = {0}; // Element to change (background, text, os)
+    char type[MAX_CMD] = {0};  // Type of element to change (primary, secondary)
+                               // (not applicable for os theme and background)
+    char color[MAX_CMD] = {0}; // Color to change to
     int flag_index = 0;
     int j = 0;
 
+    // Parse the flags
     while (input[i] != '\0') {
       // Flag start
       if (input[i] == '-') {
@@ -321,6 +326,12 @@ void parse_command(char *input) {
         if (flag_index == 1 && j < MAX_CMD - 1) {
           element[j++] = input[i];
         } else if (flag_index == 2 && j < MAX_CMD - 1) {
+          // Skip type for background
+          if (is_equal(element, "b")) {
+            flag_index = 3;
+            continue;
+          }
+
           type[j++] = input[i];
         } else if (flag_index == 3 && j < MAX_CMD - 1) {
           color[j++] = input[i];
@@ -336,14 +347,20 @@ void parse_command(char *input) {
         } else if (flag_index == 3) {
           color[j] = '\0';
         }
-        j = 0; // Reset j after each flag
+
+        // Reset j after each flag
+        j = 0;
       }
+
+      // Increment i
       i++;
     }
 
     char *color_option = (char *)0;
 
+    // For os theme, no color is required (set Black as default color)
     if (is_equal(element, "os") == 0) {
+      // If change color (not theme), color is required
       if (is_equal(color, "red")) {
         color_option = COLOR.RED;
       } else if (is_equal(color, "green")) {
@@ -366,10 +383,13 @@ void parse_command(char *input) {
         return;
       }
     } else {
+      // Default color for os theme (Will not be applied to os theme)
       color_option = COLOR.BLACK;
     }
 
+    // Handle color change
     if (is_equal(element, "t")) {
+      // Change text color
       if (is_equal(type, "p")) {
         OS_CONFIG.PRIMARY_COLOR = color_option;
       } else if (is_equal(type, "s")) {
@@ -384,7 +404,7 @@ void parse_command(char *input) {
       }
     } else if (is_equal(element, "b")) {
       OS_CONFIG.BACKGROUND_COLOR = color_option;
-    } else if (is_equal(element, "os")) {
+    } else if (is_equal(element, "os")) { // Change OS theme
       if (is_equal(type, "bright")) {
         OS_CONFIG.PRIMARY_COLOR = COLOR.YELLOW;
         OS_CONFIG.SECONDARY_COLOR = COLOR.WHITE;

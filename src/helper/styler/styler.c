@@ -57,7 +57,7 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
 
   // Print keys
   for (int i = 0; i < numKeys; i++) {
-    str_format(keys[i], COLOR.YELLOW);
+    str_format(keys[i], OS_CONFIG.PRIMARY_COLOR);
     // Adjust spacing based on the maximum length of the column
     for (int j = 0; j < maxColLength[i] - len(keys[i]) + 4;
          j++) { // Added 4 spaces for padding
@@ -70,7 +70,7 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
   for (int i = 0; i < numValues; i++) {
     // Print values for current row
     for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
-      uart_puts(values[i][j]);
+      str_format(values[i][j], OS_CONFIG.SECONDARY_COLOR);
       // Adjust spacing based on the maximum length of the column
       for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 4;
            k++) { // Added 4 spaces for padding

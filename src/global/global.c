@@ -68,15 +68,14 @@ Acknowledgement ACK = {
     .declaration = "I declare that in submitting all work for this assessment I have read, understood and agree to the content and expectations of the Assessment declaration.",
 };
 
-Color COLOR = {
-    .RED = "\033[0;31m",
-    .GREEN = "\033[0;32m",
-    .YELLOW = "\033[0;33m",
-    .BLUE = "\033[0;34m",
-    .MAGENTA = "\033[0;35m",
-    .CYAN = "\033[0;36m",
-    .DEFAULT = "\033[0;33m",
-};
+Color COLOR = {.RED = "\033[0;31m",
+               .GREEN = "\033[0;32m",
+               .YELLOW = "\033[0;33m",
+               .BLUE = "\033[0;34m",
+               .PURPLE = "\033[0;35m",
+               .CYAN = "\033[0;36m",
+               .WHITE = "\033[0m",
+               .BLACK = "\033[0;30m"};
 
 Styler STYLER = {
     .BOLD_ON = "\033[1m",
@@ -86,3 +85,8 @@ Styler STYLER = {
     .ITALIC_OFF = "\033[23m",
     .UNDERLINE_OFF = "\033[24m",
 };
+
+OsConfig OS_CONFIG = {.PRIMARY_COLOR = "\033[0;33m",
+                      .SECONDARY_COLOR = "\033[0m",
+                      .BACKGROUND_COLOR = "\033[0;30m",
+                      .THEME = (char *)0};

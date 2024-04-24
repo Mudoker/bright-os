@@ -5,10 +5,9 @@
 
 void os_greet() {
   uart_puts("\n");
-
+  uart_puts("Triggering OS...\n");
   // Print OS logo
-  char *os_logo = str_format(OS_INF.ascii_art_logo, COLOR.YELLOW);
-  uart_puts(os_logo);
+  str_format(OS_INF.ascii_art_logo, OS_CONFIG.PRIMARY_COLOR);
   uart_puts("\n");
 
   // Print OS Information box
@@ -16,33 +15,28 @@ void os_greet() {
   uart_puts("\n");
 
   // Format and print "ID" title
-  char *id_title = str_format("ID           : ", COLOR.YELLOW);
-  uart_puts(id_title);
-  uart_puts(OS_INF.id);
-  uart_puts("\n\0");
+  str_format("ID           : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.id, OS_CONFIG.SECONDARY_COLOR);
+  uart_puts("\n");
 
   // Format and print "OS Name" title
-  char *name_title = str_format("OS Name      : ", COLOR.YELLOW);
-  uart_puts(name_title);
-  uart_puts(OS_INF.name);
+  str_format("OS Name      : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.name, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Format and print "Version" title
-  char *version_title = str_format("Version      : ", COLOR.YELLOW);
-  uart_puts(version_title);
-  uart_puts(OS_INF.version);
+  str_format("Version      : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.version, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Format and print "Home URL" title
-  char *home_url_title = str_format("Home URL     : ", COLOR.YELLOW);
-  uart_puts(home_url_title);
-  uart_puts(OS_INF.home_url);
+  str_format("Home URL     : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.home_url, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Format and print "Support URL" title
-  char *sup_url_title = str_format("Support URL  : ", COLOR.YELLOW);
-  uart_puts(sup_url_title);
-  uart_puts(OS_INF.support_url);
+  str_format("Support URL  : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.support_url, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Author Information
@@ -50,67 +44,58 @@ void os_greet() {
   uart_puts("\n");
 
   // Print author name
-  char *author_name = str_format("Author       : ", COLOR.YELLOW);
-  uart_puts(author_name);
-  uart_puts(OS_INF.author.name);
+  str_format("Author       : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.author.name, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author username
-  char *username = str_format("Username     : ", COLOR.YELLOW);
-  uart_puts(username);
-  uart_puts(OS_INF.author.username);
+  str_format("Username     : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.author.username, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author SID
-  char *sid = str_format("SID          : ", COLOR.YELLOW);
-  uart_puts(sid);
-  uart_puts(OS_INF.author.sid);
+  str_format("SID          : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.author.sid, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author email
-  char *email = str_format("Email        : ", COLOR.YELLOW);
-  uart_puts(email);
-  uart_puts(OS_INF.author.email);
+  str_format("Email        : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(OS_INF.author.email, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Copyright
   print_in_box("Acknowledgement");
-  uart_puts("School of Science, Engineering and Technology\n\n");
 
   // Print school name (RMIT SSET)
-  char *school = str_format("School       : ", COLOR.YELLOW);
-  uart_puts(school);
-  uart_puts(ACK.school);
+  str_format("School       : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(ACK.school, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print course name (Embedded Systems 3)
-  char *course = str_format("Course       : ", COLOR.YELLOW);
-  uart_puts(course);
-  uart_puts(ACK.course);
+  str_format("Course       : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(ACK.course, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print lecturer name (Mr. Linh T.D.)
-  char *lecturer = str_format("Lecturer     : ", COLOR.YELLOW);
-  uart_puts(lecturer);
-  uart_puts(ACK.lecturer);
+  str_format("Lecturer     : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(ACK.lecturer, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print submitted by
-  char *submitted_by = str_format("Submitted by : ", COLOR.YELLOW);
-  uart_puts(submitted_by);
-  uart_puts(ACK.submitted_by);
+  str_format("Submitted by : ", OS_CONFIG.PRIMARY_COLOR);
+  str_format(ACK.submitted_by, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n\n");
 
   // Print declaration
-  uart_puts(ACK.declaration);
+  str_format(ACK.declaration, OS_CONFIG.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print OS logo
-  char *os_name = str_format(OS_INF.ascii_art_name, COLOR.YELLOW);
-  uart_puts(os_name);
+  str_format(OS_INF.ascii_art_name, OS_CONFIG.PRIMARY_COLOR);
   uart_puts("\n");
 
-  uart_puts("@2024. All rights reserved.\n\n");
+  str_format("@2024. All rights reserved.", OS_CONFIG.SECONDARY_COLOR);
+  uart_puts("\n");
 }
 
 // As per limitations of bare-metal programming, the stack is implemented as
@@ -291,7 +276,7 @@ void parse_command(char *input) {
   }
 
   // Check for various commands
-  if (is_equal(command, "help") == 0) {
+  if (is_equal(command, "help")) {
     // Extract the command to get help for
     char help_command[MAX_CMD];
     j = 0;
@@ -306,13 +291,102 @@ void parse_command(char *input) {
     } else {
       show_help(help_command);
     }
-  } else if (is_equal(command, "os") == 0) {
+  } else if (is_equal(command, "os")) {
     os_greet();
-  } else if (is_equal(command, "clr") == 0 || is_equal(command, "cls") == 0 ||
-             is_equal(command, "clear") == 0) {
+  } else if (is_equal(command, "clr") || is_equal(command, "cls") ||
+             is_equal(command, "clear")) {
     uart_puts("\033c"); // Full terminal reset
-  } else if (is_equal(command, "hist") == 0) {
+  } else if (is_equal(command, "hist")) {
     uart_puts("\n");
+  } else if (is_equal(command, "setcolor")) {
+    char element[MAX_CMD];
+    char type[MAX_CMD];
+    char color[MAX_CMD];
+    int flag_index = 0;
+    int j = 0;
+
+    while (input[i] != '\0') {
+      // Flag start
+      if (input[i] == '-') {
+        flag_index++;
+        i++;
+        j = 0; // Reset j after each flag
+        continue;
+      }
+
+      // Extract the flags
+      if (input[i] != ' ') {
+        if (flag_index == 1 && j < MAX_CMD - 1) {
+          element[j++] = input[i];
+        } else if (flag_index == 2 && j < MAX_CMD - 1) {
+          type[j++] = input[i];
+        } else if (flag_index == 3 && j < MAX_CMD - 1) {
+          color[j++] = input[i];
+        }
+      }
+
+      // Null terminate strings when encountering space
+      if (input[i] == ' ') {
+        if (flag_index == 1) {
+          element[j] = '\0';
+        } else if (flag_index == 2) {
+          type[j] = '\0';
+        } else if (flag_index == 3) {
+          color[j] = '\0';
+        }
+        j = 0; // Reset j after each flag
+      }
+      i++;
+    }
+
+    char *color_option;
+
+    if (is_equal(color, "red")) {
+      color_option = COLOR.RED;
+    } else if (is_equal(color, "green")) {
+      color_option = COLOR.GREEN;
+    } else if (is_equal(color, "yellow")) {
+      color_option = COLOR.YELLOW;
+    } else if (is_equal(color, "blue")) {
+      color_option = COLOR.BLUE;
+    } else if (is_equal(color, "purple")) {
+      color_option = COLOR.PURPLE;
+    } else if (is_equal(color, "cyan")) {
+      color_option = COLOR.CYAN;
+    } else if (is_equal(color, "white")) {
+      color_option = COLOR.WHITE;
+    } else if (is_equal(color, "black")) {
+      color_option = COLOR.BLACK;
+    } else {
+      uart_puts(
+          "\nInvalid color. Type 'help setcolor' to see available colors.");
+      return;
+    }
+
+    if (is_equal(element, "t")) {
+      if (is_equal(type, "p")) {
+        OS_CONFIG.PRIMARY_COLOR = color_option;
+      } else if (is_equal(type, "s")) {
+        OS_CONFIG.SECONDARY_COLOR = color_option;
+      } else if (is_equal(type, "a")) {
+        OS_CONFIG.PRIMARY_COLOR = color_option;
+        OS_CONFIG.SECONDARY_COLOR = color_option;
+      } else {
+        uart_puts(
+            "\nInvalid type. Type 'help setcolor' to see available types.");
+        return;
+      }
+
+    } else if (is_equal(element, "b")) {
+      OS_CONFIG.BACKGROUND_COLOR = color_option;
+    } else {
+      uart_puts("\nInvalid element. Type 'help setcolor' to see available "
+                "elements.");
+      return;
+    }
+
+    // Print success message
+    uart_puts("\nColor changed successfully.");
   } else {
     uart_puts("\nInvalid command. Type 'help' to see available commands.");
   }

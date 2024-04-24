@@ -9,8 +9,7 @@ void clear_current_command() {
   uart_puts("\033[2K\r");
 
   // Show prompt
-  char *prompt = str_format("BrightOS> ", COLOR.YELLOW);
-  uart_puts(prompt); // Reprint the colored prompt
+  str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR);
 }
 
 void cli() {
@@ -26,8 +25,7 @@ void cli() {
     uart_puts("\n");
 
     // Show prompt
-    char *prompt = str_format("BrightOS> ", COLOR.YELLOW);
-    uart_puts(prompt);
+    str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR);
 
     is_new_command = 0;
 
@@ -99,23 +97,11 @@ void cli() {
       push_command(&command_stack, cli_buffer);
 
       parse_command(cli_buffer);
-      // // Compare and execute the command
-      // if (is_equal(cli_buffer, "os") == 0) {
-      //   os_greet();
-      // } else if (is_equal(cli_buffer, "clr") == 0 ||
-      //            is_equal(cli_buffer, "cls") == 0 ||
-      //            is_equal(cli_buffer, "clear") == 0) {
-      //   uart_puts("\033c"); // Full terminal reset
-      
-      if (is_equal(cli_buffer, "hist") == 0) {
+
+      if (is_equal(cli_buffer, "hist")) {
         uart_puts("\n");
         get_all_commands(&command_stack);
       }
-
-      // } else {
-      //   uart_puts("\nInvalid command. Type 'help' to see available
-      //   commands.");
-      // }
 
       // Reset the buffer
       uart_puts("\n");

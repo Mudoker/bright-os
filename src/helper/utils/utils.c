@@ -2,7 +2,7 @@ int is_equal(char *str1, char *str2) {
   // Compare the strings
   while (*str1 && *str2) {
     if (*str1 != *str2) {
-      return 1;
+      return 0;
     }
     str1++;
     str2++;
@@ -10,10 +10,10 @@ int is_equal(char *str1, char *str2) {
 
   // Check if both strings have ended simultaneously
   if (*str1 == '\0' && *str2 == '\0') {
-    return 0;
+    return 1;
   }
 
-  return 1;
+  return 0;
 }
 
 int len(const char *str) {

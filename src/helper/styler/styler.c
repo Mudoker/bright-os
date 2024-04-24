@@ -4,21 +4,21 @@
 #include "../utils/utils.h"
 
 // Function to format string with color and print it
-char *str_format(char *str, const char *color_code) {
+void str_format(char *str, const char *color_code) {
   if (str == (char *)0 || color_code == (char *)0) {
-    return (char *)0; // Invalid input
+    return; // Invalid input
   }
 
   static char formatted_str[MAX_STR_LEN];
 
-  formatted_str[0] = '\0';
+  formatted_str[0] = '\0'; // Initialize the string
 
   // Concatenate the style code, color code and the string
   concat(formatted_str, color_code);
   concat(formatted_str, str);
-  concat(formatted_str, "\033[0m");
+  concat(formatted_str, "\033[0m \0");
 
-  return formatted_str;
+  uart_puts(formatted_str);
 }
 
 // Print text in box
@@ -57,8 +57,7 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
 
   // Print keys
   for (int i = 0; i < numKeys; i++) {
-    char *formatted_key = str_format(keys[i], COLOR.YELLOW);
-    uart_puts(formatted_key);
+    str_format(keys[i], COLOR.YELLOW);
     // Adjust spacing based on the maximum length of the column
     for (int j = 0; j < maxColLength[i] - len(keys[i]) + 4;
          j++) { // Added 4 spaces for padding

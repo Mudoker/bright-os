@@ -13,7 +13,9 @@ typedef struct CommandStack {
 } CommandStack;
 
 // Function prototypes
-void os_greet(); // Welcome message
+void os_greet();                   // Welcome message
+void show_help(char *command);     // Show help menu
+void parse_command(char *command); // Parse the command
 
 // Command stack methods
 void push_command(struct CommandStack *stack, char *command);

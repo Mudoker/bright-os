@@ -285,7 +285,9 @@ void parse_command(char *input) {
     while (input[i] != '\0') {
       help_command[j++] = input[i++];
     }
-    help_command[j] = '\0'; // Null-terminate the help command
+
+    // Null-terminate the help command
+    help_command[j] = '\0';
 
     // If help command is empty, treat as "all"
     if (len(help_command) == 0) {
@@ -293,10 +295,11 @@ void parse_command(char *input) {
     } else {
       show_help(help_command);
     }
-  } else if (is_equal(command, "os")) { // Show OS information
+  } else if (is_equal(command, "os")) {
+    // Show OS information
     os_greet();
   } else if (is_equal(command, "clr") || is_equal(command, "cls") ||
-             is_equal(command, "clear")) { // Clear the terminal
+             is_equal(command, "clear")) {
     // Clear the terminal
     uart_puts("\033c");
   } else if (is_equal(command, "hist")) {

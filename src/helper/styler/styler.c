@@ -4,24 +4,9 @@
 #include "../utils/utils.h"
 
 // Function to format string with color and print it
-char *str_format(char *str, const char *color_code, int style) {
+char *str_format(char *str, const char *color_code) {
   if (str == (char *)0 || color_code == (char *)0) {
     return (char *)0; // Invalid input
-  }
-
-  char *style_code = "";
-
-  // Assign style code based on bold and italic flags
-  if (style == 111) {
-    concat(style_code, STYLER.BOLD_ON);
-    concat(style_code, STYLER.ITALIC_ON);
-    concat(style_code, STYLER.UNDERLINE_ON);
-  } else if (style == 1) {
-    style_code = STYLER.BOLD_ON;
-  } else if (style == 10) {
-    style_code = STYLER.ITALIC_ON;
-  } else if (style == 100) {
-    style_code = STYLER.UNDERLINE_ON;
   }
 
   static char formatted_str[MAX_STR_LEN];
@@ -29,12 +14,9 @@ char *str_format(char *str, const char *color_code, int style) {
   formatted_str[0] = '\0';
 
   // Concatenate the style code, color code and the string
-  concat(formatted_str, style_code);
   concat(formatted_str, color_code);
   concat(formatted_str, str);
   concat(formatted_str, "\033[0m");
-
-  formatted_str[len(formatted_str)] = '\0';
 
   return formatted_str;
 }
@@ -58,4 +40,44 @@ void print_in_box(char *str) {
     uart_puts("-");
   }
   uart_puts("+\n");
+}
+
+void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
+              int numValues) {
+
+  int maxColLength[MAX_COLS] = {8}; // Initialize all lengths to 8
+  for (int i = 0; i < numValues; i++) {
+    for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
+      int colLen = len(values[i][j]);
+      if (colLen > maxColLength[j]) {
+        maxColLength[j] = colLen;
+      }
+    }
+  }
+
+  // Print keys
+  for (int i = 0; i < numKeys; i++) {
+    char *formatted_key = str_format(keys[i], COLOR.YELLOW);
+    uart_puts(formatted_key);
+    // Adjust spacing based on the maximum length of the column
+    for (int j = 0; j < maxColLength[i] - len(keys[i]) + 4;
+         j++) { // Added 4 spaces for padding
+      uart_puts(" ");
+    }
+  }
+  uart_puts("\n\n");
+
+  // Print values
+  for (int i = 0; i < numValues; i++) {
+    // Print values for current row
+    for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
+      uart_puts(values[i][j]);
+      // Adjust spacing based on the maximum length of the column
+      for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 4;
+           k++) { // Added 4 spaces for padding
+        uart_puts(" ");
+      }
+    }
+    uart_puts("\n");
+  }
 }

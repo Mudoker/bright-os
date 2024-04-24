@@ -190,11 +190,13 @@ void show_help(char *command) {
   commands_desc[3][0] = "Clear the terminal";
   commands_desc[4][0] = "Show command history";
   commands_desc[5][0] = "Change color of OS";
-  commands_desc[5][1] = "-[element]: b: background, t: text";
-  commands_desc[5][2] = "-[type]: p: primary, s: secondary, a: all";
+  commands_desc[5][1] = "-[element]: b: background, t: text, os: os theme";
+  commands_desc[5][2] =
+      "-[type]: p: primary, s: secondary, a: all, (not applicable "
+      "for os theme)";
   commands_desc[5][3] =
       "-[color]: red, green, yellow, blue, purple, cyan, white, "
-      "black";
+      "black, bright (os only), dark (os only), light (os only)";
   commands_desc[5][4] = "\nE.g.: setcolor -b -p -red";
   commands_desc[6][0] = "Show reference for a target";
   commands_desc[6][1] = "-[target]: os, option: -c -theme -<dark/light/bright>";
@@ -299,9 +301,9 @@ void parse_command(char *input) {
   } else if (is_equal(command, "hist")) {
     uart_puts("\n");
   } else if (is_equal(command, "setcolor")) {
-    char element[MAX_CMD];
-    char type[MAX_CMD];
-    char color[MAX_CMD];
+    char element[MAX_CMD] = {0};
+    char type[MAX_CMD] = {0};
+    char color[MAX_CMD] = {0};
     int flag_index = 0;
     int j = 0;
 
@@ -339,28 +341,32 @@ void parse_command(char *input) {
       i++;
     }
 
-    char *color_option;
+    char *color_option = (char *)0;
 
-    if (is_equal(color, "red")) {
-      color_option = COLOR.RED;
-    } else if (is_equal(color, "green")) {
-      color_option = COLOR.GREEN;
-    } else if (is_equal(color, "yellow")) {
-      color_option = COLOR.YELLOW;
-    } else if (is_equal(color, "blue")) {
-      color_option = COLOR.BLUE;
-    } else if (is_equal(color, "purple")) {
-      color_option = COLOR.PURPLE;
-    } else if (is_equal(color, "cyan")) {
-      color_option = COLOR.CYAN;
-    } else if (is_equal(color, "white")) {
-      color_option = COLOR.WHITE;
-    } else if (is_equal(color, "black")) {
-      color_option = COLOR.BLACK;
+    if (is_equal(element, "os") == 0) {
+      if (is_equal(color, "red")) {
+        color_option = COLOR.RED;
+      } else if (is_equal(color, "green")) {
+        color_option = COLOR.GREEN;
+      } else if (is_equal(color, "yellow")) {
+        color_option = COLOR.YELLOW;
+      } else if (is_equal(color, "blue")) {
+        color_option = COLOR.BLUE;
+      } else if (is_equal(color, "purple")) {
+        color_option = COLOR.PURPLE;
+      } else if (is_equal(color, "cyan")) {
+        color_option = COLOR.CYAN;
+      } else if (is_equal(color, "white")) {
+        color_option = COLOR.WHITE;
+      } else if (is_equal(color, "black")) {
+        color_option = COLOR.BLACK;
+      } else {
+        uart_puts(
+            "\nInvalid color. Type 'help setcolor' to see available colors.");
+        return;
+      }
     } else {
-      uart_puts(
-          "\nInvalid color. Type 'help setcolor' to see available colors.");
-      return;
+      color_option = COLOR.BLACK;
     }
 
     if (is_equal(element, "t")) {
@@ -376,9 +382,23 @@ void parse_command(char *input) {
             "\nInvalid type. Type 'help setcolor' to see available types.");
         return;
       }
-
     } else if (is_equal(element, "b")) {
       OS_CONFIG.BACKGROUND_COLOR = color_option;
+    } else if (is_equal(element, "os")) {
+      if (is_equal(type, "bright")) {
+        OS_CONFIG.PRIMARY_COLOR = COLOR.YELLOW;
+        OS_CONFIG.SECONDARY_COLOR = COLOR.WHITE;
+      } else if (is_equal(type, "light")) {
+        OS_CONFIG.PRIMARY_COLOR = COLOR.CYAN;
+        OS_CONFIG.SECONDARY_COLOR = COLOR.BLACK;
+      } else if (is_equal(type, "dark")) {
+        OS_CONFIG.PRIMARY_COLOR = COLOR.GREEN;
+        OS_CONFIG.SECONDARY_COLOR = COLOR.PURPLE;
+      } else {
+        uart_puts("\nInvalid theme. Type 'help setcolor' to see available "
+                  "themes.");
+        return;
+      }
     } else {
       uart_puts("\nInvalid element. Type 'help setcolor' to see available "
                 "elements.");

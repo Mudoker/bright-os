@@ -112,8 +112,8 @@ void uart_puts(char *s) {
 
 // Calculate baud rate
 BaudRateConfig get_baud_rate(int baud_rate) {
-  int valid_baud[] = {110,  300,   1200,  2400,  4800,
-                      9600, 19200, 38400, 57600, 115200};
+  int valid_baud[] = {110,   300,   600,   1200,   2400,   4800,   9600,  14400,
+                      19200, 38400, 57600, 115200, 230400, 460800, 921600};
 
   for (int i = 0; i < 10; i++) {
     if (baud_rate == valid_baud[i]) {
@@ -122,12 +122,12 @@ BaudRateConfig get_baud_rate(int baud_rate) {
 
     if (i == 9) {
       // Return default baud rate
-      // str_format("\nInvalid baud rate. Defaulting to 115200\n",
-      //            OS_CONFIG.SECONDARY_COLOR);
+      str_format("\n\nInvalid baud rate. Defaulting to 115200\n", OS_CONFIG.ERROR,
+                 OS_CONFIG.BACKGROUND_COLOR);
 
-      // str_format("Available baud rates: 110, 300, 1200, 2400, 4800, 9600, "
-      //            "19200, 38400, 57600, 115200\n",
-      //            OS_CONFIG.SECONDARY_COLOR);
+      str_format("Available baud rates: 110, 300, 1200, 2400, 4800, 9600, "
+                 "19200, 38400, 57600, 115200\n",
+                 OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
       baud_rate = 115200;
     }
   }

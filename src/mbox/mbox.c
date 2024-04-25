@@ -60,8 +60,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel) {
   if (msg == mailbox_read(channel)) {
     /* is it a valid successful response (Response Code) ? */
     if (mBuf[1] == MBOX_RESPONSE)
-    //   uart_puts("\nGot successful response \n");
-    return (mBuf[1] == MBOX_RESPONSE);
+      return (mBuf[1] == MBOX_RESPONSE);
   }
   return 0;
 }

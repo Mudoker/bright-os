@@ -82,8 +82,8 @@ typedef struct {
 } OsConfig;
 
 typedef struct {
-  int ibrd;
-  int fbrd;
+  unsigned int ibrd;
+  unsigned int fbrd;
 } BaudRateConfig;
 
 // Configuration settings

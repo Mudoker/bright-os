@@ -1,3 +1,4 @@
+#include "../global/global.h"
 #include "../global/gpio.h"
 
 /* PL011 UART (UART0) registers */
@@ -47,11 +48,11 @@
 #define UART0_LCRH_WLEN_6BIT (1 << 5)
 #define UART0_LCRH_WLEN_7BIT (2 << 5)
 #define UART0_LCRH_WLEN_8BIT (3 << 5)
-#define UART0_LCRH_FEN (1 << 4)	 /* FEN = enable FIFOs */
+#define UART0_LCRH_FEN (1 << 4)  /* FEN = enable FIFOs */
 #define UART0_LCRH_STP2 (1 << 3) /* STP2 = enable 2 stop bits */
-#define UART0_LCRH_EPS (1 << 2)	 /* EPS  = even parity select */
-#define UART0_LCRH_PEN (1 << 1)	 /* PEN  = parity enable */
-#define UART0_LCRH_BRK (1 << 0)	 /* BRK  = send break after next character */
+#define UART0_LCRH_EPS (1 << 2)  /* EPS  = even parity select */
+#define UART0_LCRH_PEN (1 << 1)  /* PEN  = parity enable */
+#define UART0_LCRH_BRK (1 << 0)  /* BRK  = send break after next character */
 /* CR = Control Register */
 /*   To enable transmission TXE and UARTEN must be set to 1 */
 /*   To enable reception RXE and UARTEN must be set to 1 */
@@ -70,7 +71,7 @@
 /*   13 = OUT2 = Unsupported */
 /*   12 = OUT1 = Unsupported */
 #define UART0_CR_RTS (1 << 11) /*   11 = RTS = Request to Send */
-							   /*   10 = DTR = Unsupported */
+                               /*   10 = DTR = Unsupported */
 #define UART0_CR_RXE (1 << 9)  /*    9 = RXE = Receive Enable */
 #define UART0_CR_TXE (1 << 8)  /*    8 = TXE = Transmit Enable */
 #define UART0_CR_LBE (1 << 7)  /*    7 = LBE = Loopback Enable */
@@ -99,12 +100,14 @@
 #define UART0_IMSC (*(volatile unsigned int *)(UART0_BASE + 0x38))
 /* RIS = Raw Interrupt Status */
 #define UART0_IMSC_OE (1 << 10) /* OERIS = Overrun Interrupt Raw Status */
-#define UART0_IMSC_BE (1 << 9)	/* BERIS = Break Interrupt Raw Status*/
-#define UART0_IMSC_PE (1 << 8)	/* PERIS = Parity Interrupt Raw Status */
-#define UART0_IMSC_FE (1 << 7)	/* FERIS = Framing Interrupt Raw Status */
-#define UART0_IMSC_RT (1 << 6)	/* RTRIS = Receivce Timeout Raw Status */
-#define UART0_IMSC_TX (1 << 5)	/* TXRIS = Transmit Interrupt Raw Status */
-#define UART0_IMSC_RX (1 << 4)	/* RXRIS = Receive Masked Interrupt Raw Status */
+#define UART0_IMSC_BE (1 << 9)  /* BERIS = Break Interrupt Raw Status*/
+#define UART0_IMSC_PE (1 << 8)  /* PERIS = Parity Interrupt Raw Status */
+#define UART0_IMSC_FE (1 << 7)  /* FERIS = Framing Interrupt Raw Status */
+#define UART0_IMSC_RT (1 << 6)  /* RTRIS = Receivce Timeout Raw Status */
+#define UART0_IMSC_TX (1 << 5)  /* TXRIS = Transmit Interrupt Raw Status */
+#define UART0_IMSC_RX                                                          \
+  (1 << 4) /* RXRIS = Receive Masked Interrupt Raw Status                      \
+            */
 /*    3 = DSRRIS (unsupported) */
 /*    2 = DCDRIS (unsupported) */
 #define UART0_IMSC_CTS (1 << 1) /* CTSRIS = nUARTCTS Raw Status */
@@ -147,9 +150,12 @@
 #define UART0_ITOP (*(volatile unsigned int *)(UART0_BASE + 0x88))
 /* TDR = Test Data Register */
 #define UART0_TDR (*(volatile unsigned int *)(UART0_BASE + 0x8C))
+// Define the UART clock speed
+#define UART_CLK 48000000
 
 /* Function prototypes */
 void uart_init();
 void uart_sendc(char c);
 char uart_getc();
 void uart_puts(char *s);
+BaudRateConfig get_baud_rate(int baud_rate);

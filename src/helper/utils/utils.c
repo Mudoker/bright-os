@@ -77,8 +77,9 @@ int starts_with(char *str, char *prefix) {
   return 1;
 }
 
-char *int_to_string(int number) {
-  static char result[MAX_CMD_SIZE];
+void int_to_string(int number, char *result) {
+  result[0] = '\0'; // Initialize the string
+
   int i = 0;
   int is_negative = 0;
 
@@ -99,6 +100,31 @@ char *int_to_string(int number) {
   if (is_negative) {
     result[i++] = '-';
   }
+
+  // Reverse the string
+  int j;
+  char temp;
+  for (j = 0; j < i / 2; j++) {
+    temp = result[j];
+    result[j] = result[i - j - 1];
+    result[i - j - 1] = temp;
+  }
+
+  // Add null terminator
+  result[i] = '\0';
+}
+
+char *hex_to_string(unsigned int number) {
+  static char result[MAX_STR_LEN];
+  int i = 0;
+
+  // Extract hexadecimal digits from the number and store them in reverse order
+  // in the result buffer
+  do {
+    int digit = number % 16;
+    result[i++] = (digit < 10) ? (char)(digit + '0') : (char)(digit - 10 + 'A');
+    number /= 16;
+  } while (number != 0);
 
   // Reverse the string
   int j;
@@ -147,4 +173,46 @@ int string_to_int(char *charArray) {
   result *= sign;
 
   return result;
+}
+
+void convertToMacAddress(unsigned int num1, unsigned int num2,
+                         char *mac_address) {
+  unsigned char byte1 = (num1 >> 24) & 0xFF;
+  unsigned char byte2 = (num1 >> 16) & 0xFF;
+  unsigned char byte3 = (num1 >> 8) & 0xFF;
+  unsigned char byte4 = num1 & 0xFF;
+  unsigned char byte5 = (num2 >> 8) & 0xFF;
+  unsigned char byte6 = num2 & 0xFF;
+
+  // Convert bytes to hexadecimal representation
+  mac_address[0] =
+      (byte4 >> 4) < 10 ? (byte4 >> 4) + '0' : (byte4 >> 4) - 10 + 'A';
+  mac_address[1] =
+      (byte4 & 0x0F) < 10 ? (byte4 & 0x0F) + '0' : (byte4 & 0x0F) - 10 + 'A';
+  mac_address[2] = ':';
+  mac_address[3] =
+      (byte3 >> 4) < 10 ? (byte3 >> 4) + '0' : (byte3 >> 4) - 10 + 'A';
+  mac_address[4] =
+      (byte3 & 0x0F) < 10 ? (byte3 & 0x0F) + '0' : (byte3 & 0x0F) - 10 + 'A';
+  mac_address[5] = ':';
+  mac_address[6] =
+      (byte2 >> 4) < 10 ? (byte2 >> 4) + '0' : (byte2 >> 4) - 10 + 'A';
+  mac_address[7] =
+      (byte2 & 0x0F) < 10 ? (byte2 & 0x0F) + '0' : (byte2 & 0x0F) - 10 + 'A';
+  mac_address[8] = ':';
+  mac_address[9] =
+      (byte1 >> 4) < 10 ? (byte1 >> 4) + '0' : (byte1 >> 4) - 10 + 'A';
+  mac_address[10] =
+      (byte1 & 0x0F) < 10 ? (byte1 & 0x0F) + '0' : (byte1 & 0x0F) - 10 + 'A';
+  mac_address[11] = ':';
+  mac_address[12] =
+      (byte6 >> 4) < 10 ? (byte6 >> 4) + '0' : (byte6 >> 4) - 10 + 'A';
+  mac_address[13] =
+      (byte6 & 0x0F) < 10 ? (byte6 & 0x0F) + '0' : (byte6 & 0x0F) - 10 + 'A';
+  mac_address[14] = ':';
+  mac_address[15] =
+      (byte5 >> 4) < 10 ? (byte5 >> 4) + '0' : (byte5 >> 4) - 10 + 'A';
+  mac_address[16] =
+      (byte5 & 0x0F) < 10 ? (byte5 & 0x0F) + '0' : (byte5 & 0x0F) - 10 + 'A';
+  mac_address[17] = '\0'; // Null-terminate the string
 }

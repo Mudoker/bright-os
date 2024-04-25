@@ -159,3 +159,5 @@ void uart_sendc(char c);
 char uart_getc();
 void uart_puts(char *s);
 BaudRateConfig get_baud_rate(int baud_rate);
+void uart_hex(unsigned int d);
+void uart_dec(int num);

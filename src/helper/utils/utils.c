@@ -1,3 +1,6 @@
+#include "../../global/global.h"
+#include "../../uart/uart.h"
+
 int is_equal(char *str1, char *str2) {
   // Compare the strings
   while (*str1 && *str2) {
@@ -72,4 +75,76 @@ int starts_with(char *str, char *prefix) {
   }
 
   return 1;
+}
+
+char *int_to_string(int number) {
+  static char result[MAX_CMD_SIZE];
+  int i = 0;
+  int is_negative = 0;
+
+  // Handle negative numbers
+  if (number < 0) {
+    is_negative = 1;
+    number = -number;
+  }
+
+  // Extract digits from the number and store them in reverse order in the
+  // result buffer
+  do {
+    result[i++] = (char)(number % 10 + '0');
+    number /= 10;
+  } while (number != 0);
+
+  // Add '-' sign for negative numbers
+  if (is_negative) {
+    result[i++] = '-';
+  }
+
+  // Reverse the string
+  int j;
+  char temp;
+  for (j = 0; j < i / 2; j++) {
+    temp = result[j];
+    result[j] = result[i - j - 1];
+    result[i - j - 1] = temp;
+  }
+
+  // Add null terminator
+  result[i] = '\0';
+
+  return result;
+}
+
+int string_to_int(char *charArray) {
+  int result = 0;
+  int sign = 1; // Positive by default
+
+  // Check for negative sign
+  if (*charArray == '-') {
+    sign = -1;
+    charArray++; // Move past the negative sign
+  }
+
+  // Iterate through the characters until the null terminator is reached
+  while (*charArray != '\0') {
+    // Convert character to digit
+    int digit = *charArray - '0';
+
+    // Ensure it's a valid digit
+    if (digit >= 0 && digit <= 9) {
+      result = result * 10 + digit;
+    } else {
+      // Invalid character encountered
+      uart_puts("Error: Invalid character in integer string\n");
+      return 0;
+    }
+
+    // Move to the next character
+    charArray++;
+  }
+
+  // Apply sign
+  result *= sign;
+
+  return result;
 }

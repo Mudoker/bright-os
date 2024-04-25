@@ -6,5 +6,7 @@ int concat(char *dest, const char *src);
 int len(const char *str);
 int copy(char *dest, const char *src);
 int starts_with(char *str, char *prefix);
+char *int_to_string(int num);
+int string_to_int(char *str);
 
 #endif

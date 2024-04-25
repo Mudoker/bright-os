@@ -14,6 +14,7 @@ GLOBAL_DIR = ./src/global
 HELPER_DIR = ./src/helper
 BUILD_DIR = ./build
 COMMANDS_DIR = ./src/commands
+MBOX_DIR = ./src/mbox
 
 # Object files
 OFILES := $(patsubst $(CLI_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.c))
@@ -23,6 +24,7 @@ OFILES += $(patsubst $(HELPER_DIR)/styler/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELP
 OFILES += $(patsubst $(HELPER_DIR)/utils/%.c,${BUILD_DIR}/%.o,$(wildcard $(HELPER_DIR)/utils/*.c))
 OFILES += $(patsubst $(CLI_DIR)/%.S,${BUILD_DIR}/%.o,$(wildcard $(CLI_DIR)/*.S))
 OFILES += $(patsubst $(COMMANDS_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(COMMANDS_DIR)/*.c))
+OFILES += $(patsubst $(MBOX_DIR)/%.c,${BUILD_DIR}/%.o,$(wildcard $(MBOX_DIR)/*.c))
 
 # Compiler
 GCCFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
@@ -52,6 +54,9 @@ $(BUILD_DIR)/%.o: $(HELPER_DIR)/utils/%.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(COMMANDS_DIR)/%.c
+	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/%.o: $(MBOX_DIR)/%.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
 kernel8.img: $(OFILES)

@@ -67,8 +67,15 @@ typedef struct {
   char *PRIMARY_COLOR;    // Primary color (Default: Yellow)
   char *SECONDARY_COLOR;  // Secondary color (Default: White)
   char *BACKGROUND_COLOR; // Background color (Default: Black)
+  char *SUCCESS;          // Success (Default: Green)
+  char *ERROR;            // Error (Default: Red)
   char *THEME;            // Theme (Default: None)
 } OsConfig;
+
+typedef struct {
+  int ibrd;
+  int fbrd;
+} BaudRateConfig;
 
 // Configuration settings
 #define MAX_CMD_SIZE 100 // Maximum command size
@@ -81,5 +88,6 @@ extern OsTrademark OS_INF;
 extern Acknowledgement ACK;
 extern Styler STYLER;
 extern OsConfig OS_CONFIG;
+extern BaudRateConfig BAUD_RATE_CONFIG;
 
 #endif

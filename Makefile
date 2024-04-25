@@ -31,7 +31,7 @@ LDFLAGS = -nostdlib
 # Targets
 .PHONY: all clean run
 
-all: clean kernel_brightos.img run
+all: clean kernel8.img run
 
 $(BUILD_DIR)/%.o: $(CLI_DIR)/%.S
 	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
@@ -54,13 +54,13 @@ $(BUILD_DIR)/%.o: $(HELPER_DIR)/utils/%.c
 $(BUILD_DIR)/%.o: $(COMMANDS_DIR)/%.c
 	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
 
-kernel_brightos.img: $(OFILES)
+kernel8.img: $(OFILES)
 	@echo BUILDING PROJECTS...
-	$(LD) $(LDFLAGS) $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel_brightos.elf
-	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel_brightos.elf $@
+	$(LD) $(LDFLAGS) $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel8.elf
+	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel8.elf $@
 
 clean:
 	del *.img .\build\*.elf .\build\*.o
 
 run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel_brightos.img -serial stdio
+	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio

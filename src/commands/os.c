@@ -267,6 +267,73 @@ char *autocomplete_command(char *buffer) {
   return (char *)0;
 }
 
+// Parse flags from the input
+char **parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int flag_count = 0;
+  char flag_buffer[MAX_CMD_SIZE][MAX_CMD];
+
+  while (input[i] != '\0' && k < MAX_CMD) {
+    if (input[i] == '-') {
+      i++;
+      j = 0; // Reset j for a new flag
+      flag_count++;
+
+      while (input[i] != ' ' && input[i] != '\0' && j < MAX_CMD - 1) {
+        flag_buffer[k][j++] = input[i++];
+      }
+
+      flag_buffer[k][j] = '\0';  // Null-terminate the flag string
+      flags[k] = flag_buffer[k]; // Assign the flag to the flags array
+      k++;                       // Increment index for the flags array
+    }
+    i++;
+  }
+
+  // Check if the number of flags exceeds the maximum allowed flags
+  if (flag_count > max_flags) {
+    uart_puts(
+        "\nToo many flags. Type 'help <command>' to see available flags.");
+    return (char **)0;
+  }
+
+  // Check if the number of flags is less than the minimum required flags
+  if (flag_count < min_flags) {
+    uart_puts("\nToo few flags. Type 'help <command>' to see required flags.");
+    return (char **)0;
+  }
+
+  return flags;
+}
+
+char *to_color(char *flag) {
+  char *color_option = (char *)0;
+
+  if (is_equal(flag, "red")) {
+    color_option = COLOR.RED;
+  } else if (is_equal(flag, "green")) {
+    color_option = COLOR.GREEN;
+  } else if (is_equal(flag, "yellow")) {
+    color_option = COLOR.YELLOW;
+  } else if (is_equal(flag, "blue")) {
+    color_option = COLOR.BLUE;
+  } else if (is_equal(flag, "purple")) {
+    color_option = COLOR.PURPLE;
+  } else if (is_equal(flag, "cyan")) {
+    color_option = COLOR.CYAN;
+  } else if (is_equal(flag, "white")) {
+    color_option = COLOR.WHITE;
+  } else if (is_equal(flag, "black")) {
+    color_option = COLOR.BLACK;
+  } else {
+    uart_puts("\nInvalid color. Type 'help setcolor' to see available colors.");
+    return (char *)0;
+  }
+
+  return color_option;
+}
 // Parse and execute command
 void parse_command(char *input) {
   // Initialize variables
@@ -308,120 +375,86 @@ void parse_command(char *input) {
   } else if (is_equal(command, "clr") || is_equal(command, "cls") ||
              is_equal(command, "clear")) {
     // Clear the terminal
-    uart_puts("\033c");
+    uart_puts("\033[2J \033[1;1H");
   } else if (is_equal(command, "hist")) {
     // Show command history
     uart_puts("\n");
   } else if (is_equal(command, "setcolor")) {
-    // Change color of OS
-    char element[MAX_CMD] = {0}; // Element to change (background, text, os)
-    char type[MAX_CMD] = {0};  // Type of element to change (primary, secondary)
-                               // (not applicable for os theme and background)
-    char color[MAX_CMD] = {0}; // Color to change to
-    int flag_index = 0;
-    int j = 0;
+    // Extract the flags
+    char *flags[MAX_CMD_SIZE];
+
+    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+      flags[i] = (char *)0;
+    }
+
+    // Define the minimum and maximum flags required for the setcolor command
+    int min_flags = 2;
+    int max_flags = 3;
 
     // Parse the flags
-    while (input[i] != '\0') {
-      // Flag start
-      if (input[i] == '-') {
-        flag_index++;
-        i++;
-        j = 0; // Reset j after each flag
-        continue;
-      }
-
-      // Extract the flags
-      if (input[i] != ' ') {
-        if (flag_index == 1 && j < MAX_CMD - 1) {
-          element[j++] = input[i];
-        } else if (flag_index == 2 && j < MAX_CMD - 1) {
-          // Skip type for background
-          if (is_equal(element, "b")) {
-            flag_index = 3;
-            continue;
-          }
-
-          type[j++] = input[i];
-        } else if (flag_index == 3 && j < MAX_CMD - 1) {
-          color[j++] = input[i];
-        }
-      }
-
-      // Null terminate strings when encountering space
-      if (input[i] == ' ') {
-        if (flag_index == 1) {
-          element[j] = '\0';
-        } else if (flag_index == 2) {
-          type[j] = '\0';
-        } else if (flag_index == 3) {
-          color[j] = '\0';
-        }
-
-        // Reset j after each flag
-        j = 0;
-      }
-
-      // Increment i
-      i++;
+    parse_flags(&input[i], flags, max_flags, min_flags);
+    if (flags == (char **)0) {
+      return;
     }
 
     char *color_option = (char *)0;
 
-    // For os theme, no color is required (set Black as default color)
-    if (is_equal(element, "os") == 0) {
-      // If change color (not theme), color is required
-      if (is_equal(color, "red")) {
-        color_option = COLOR.RED;
-      } else if (is_equal(color, "green")) {
-        color_option = COLOR.GREEN;
-      } else if (is_equal(color, "yellow")) {
-        color_option = COLOR.YELLOW;
-      } else if (is_equal(color, "blue")) {
-        color_option = COLOR.BLUE;
-      } else if (is_equal(color, "purple")) {
-        color_option = COLOR.PURPLE;
-      } else if (is_equal(color, "cyan")) {
-        color_option = COLOR.CYAN;
-      } else if (is_equal(color, "white")) {
-        color_option = COLOR.WHITE;
-      } else if (is_equal(color, "black")) {
-        color_option = COLOR.BLACK;
-      } else {
-        uart_puts(
-            "\nInvalid color. Type 'help setcolor' to see available colors.");
+    if (is_equal(flags[0], "b")) {
+      // b flag only requires color
+      if (flags[max_flags - 1] != (char *)0) {
+        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
+                  "commands.");
         return;
-      }
-    } else {
-      // Default color for os theme (Will not be applied to os theme)
-      color_option = COLOR.BLACK;
-    }
+      } else {
+        color_option = to_color(flags[1]);
 
-    // Handle color change
-    if (is_equal(element, "t")) {
-      // Change text color
-      if (is_equal(type, "p")) {
+        if (color_option == (char *)0) {
+          return;
+        }
+
+        OS_CONFIG.BACKGROUND_COLOR = color_option;
+      }
+    } else if (is_equal(flags[0], "t")) {
+
+      // If missing flags (type or color)
+      if (flags[2] == (char *)0) {
+        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
+                  "commands.");
+        return;
+      }
+
+      // t flag requires type and color
+      color_option = to_color(flags[2]);
+      if (color_option == (char *)0) {
+        return;
+      }
+
+      if (is_equal(flags[1], "p")) {
         OS_CONFIG.PRIMARY_COLOR = color_option;
-      } else if (is_equal(type, "s")) {
+      } else if (is_equal(flags[1], "s")) {
         OS_CONFIG.SECONDARY_COLOR = color_option;
-      } else if (is_equal(type, "a")) {
+      } else if (is_equal(flags[1], "a")) {
         OS_CONFIG.PRIMARY_COLOR = color_option;
         OS_CONFIG.SECONDARY_COLOR = color_option;
       } else {
-        uart_puts(
-            "\nInvalid type. Type 'help setcolor' to see available types.");
+        uart_puts("\nInvalid type. Type 'help setcolor' to see available "
+                  "types.");
         return;
       }
-    } else if (is_equal(element, "b")) {
-      OS_CONFIG.BACKGROUND_COLOR = color_option;
-    } else if (is_equal(element, "os")) { // Change OS theme
-      if (is_equal(type, "bright")) {
+    } else if (is_equal(flags[0], "os")) {
+      if (flags[2] != (char *)0) {
+        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
+                  "commands.");
+        return;
+      }
+
+      if (is_equal(flags[1], "bright")) {
         OS_CONFIG.PRIMARY_COLOR = COLOR.YELLOW;
         OS_CONFIG.SECONDARY_COLOR = COLOR.WHITE;
-      } else if (is_equal(type, "light")) {
+      } else if (is_equal(flags[1], "light")) {
         OS_CONFIG.PRIMARY_COLOR = COLOR.CYAN;
         OS_CONFIG.SECONDARY_COLOR = COLOR.BLACK;
-      } else if (is_equal(type, "dark")) {
+      } else if (is_equal(flags[1], "dark")) {
         OS_CONFIG.PRIMARY_COLOR = COLOR.GREEN;
         OS_CONFIG.SECONDARY_COLOR = COLOR.PURPLE;
       } else {
@@ -430,14 +463,13 @@ void parse_command(char *input) {
         return;
       }
     } else {
-      uart_puts("\nInvalid element. Type 'help setcolor' to see available "
+      uart_puts("\nInvalid command. Type 'help setcolor' to see available "
                 "elements.");
       return;
     }
 
-    // Print success message
-    uart_puts("\nColor changed successfully.");
-  } else {
-    uart_puts("\nInvalid command. Type 'help' to see available commands.");
+    // Success message
+    uart_puts("\nColor changed successfully.\n");
+    return;
   }
 }

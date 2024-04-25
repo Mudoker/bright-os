@@ -122,12 +122,12 @@ BaudRateConfig get_baud_rate(int baud_rate) {
 
     if (i == 9) {
       // Return default baud rate
-      str_format("\nInvalid baud rate. Defaulting to 115200\n",
-                 OS_CONFIG.SECONDARY_COLOR);
+      // str_format("\nInvalid baud rate. Defaulting to 115200\n",
+      //            OS_CONFIG.SECONDARY_COLOR);
 
-      str_format("Available baud rates: 110, 300, 1200, 2400, 4800, 9600, "
-                 "19200, 38400, 57600, 115200\n",
-                 OS_CONFIG.SECONDARY_COLOR);
+      // str_format("Available baud rates: 110, 300, 1200, 2400, 4800, 9600, "
+      //            "19200, 38400, 57600, 115200\n",
+      //            OS_CONFIG.SECONDARY_COLOR);
       baud_rate = 115200;
     }
   }

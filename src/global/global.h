@@ -42,14 +42,23 @@ typedef struct {
 
 // Theme color
 typedef struct {
-  char *RED;    // Red color
-  char *GREEN;  // Green color
-  char *YELLOW; // Yellow color
-  char *BLUE;   // Blue color
-  char *PURPLE; // Purple color
-  char *CYAN;   // Cyan color
-  char *WHITE;  // White color
-  char *BLACK;  // Black color
+  char *RED;       // Red color
+  char *GREEN;     // Green color
+  char *YELLOW;    // Yellow color
+  char *BLUE;      // Blue color
+  char *PURPLE;    // Purple color
+  char *CYAN;      // Cyan color
+  char *WHITE;     // White color
+  char *BLACK;     // Black color
+  char *RED_BG;    // Red background color
+  char *GREEN_BG;  // Green background color
+  char *YELLOW_BG; // Yellow background color
+  char *BLUE_BG;   // Blue background color
+  char *PURPLE_BG; // Purple background color
+  char *CYAN_BG;   // Cyan background color
+  char *WHITE_BG;  // White background color
+  char *BLACK_BG;  // Black background color
+  char *RESET;     // Reset color
 } Color;
 
 // Styler structure

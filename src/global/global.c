@@ -75,7 +75,16 @@ Color COLOR = {.RED = "\033[0;31m",
                .PURPLE = "\033[0;35m",
                .CYAN = "\033[0;36m",
                .WHITE = "\033[0m",
-               .BLACK = "\033[0;30m"};
+               .BLACK = "\033[0;30m",
+               .RED_BG = "\033[41m",
+               .GREEN_BG = "\033[42m",
+               .YELLOW_BG = "\033[43m",
+               .BLUE_BG = "\033[44m",
+               .PURPLE_BG = "\033[45m",
+               .CYAN_BG = "\033[46m",
+               .WHITE_BG = "\033[47m",
+               .BLACK_BG = "\033[40m",
+               .RESET = "\x1b[49m"};
 
 Styler STYLER = {
     .BOLD_ON = "\033[1m",
@@ -88,7 +97,8 @@ Styler STYLER = {
 
 OsConfig OS_CONFIG = {.PRIMARY_COLOR = "\033[0;33m",
                       .SECONDARY_COLOR = "\033[0m",
-                      .BACKGROUND_COLOR = "\033[0;30m",
+                      // reset background color
+                      .BACKGROUND_COLOR = "\x1b[49m",
                       .SUCCESS = "\033[0;32m",
                       .ERROR = "\033[0;31m",
                       .THEME = (char *)0};

@@ -2,10 +2,10 @@
 #include "../global/global.h"
 #include "../helper/styler/styler.h"
 #include "../helper/utils/utils.h"
+#include "../mbox/mbox.h"
 
-char *commands[] = {"os",   "help",     "help <name>", "clr/cls/clear",
-                    "hist", "setcolor", "ref",         "showinfo",
-                    "auth", (char *)0};
+char *commands[] = {"os",       "help", "help <name>", "clr/cls/clear", "hist",
+                    "setcolor", "ref",  "showinfo",    (char *)0};
 
 void os_greet() {
   uart_puts("\n");
@@ -87,6 +87,7 @@ void os_greet() {
 
   // Copyright
   print_in_box("Acknowledgement");
+  uart_puts("\n");
 
   // Print school name (RMIT SSET)
   str_format("School       : ", OS_CONFIG.PRIMARY_COLOR,
@@ -126,7 +127,7 @@ void os_greet() {
 
   str_format("@2024. All rights reserved.", OS_CONFIG.SECONDARY_COLOR,
              OS_CONFIG.BACKGROUND_COLOR);
-  uart_puts("\n");
+  uart_puts("\n\n");
 }
 
 // As per limitations of bare-metal programming, the stack is implemented as
@@ -204,8 +205,8 @@ void show_help(char *command) {
   str_format("A star (*) next to a name means that the command is disabled.\n ",
              OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
 
-  initialize_values(values, 11);        // Initialize the values array
-  initialize_values(commands_desc, 11); // Initialize the commands_desc array
+  initialize_values(values, 9);        // Initialize the values array
+  initialize_values(commands_desc, 9); // Initialize the commands_desc array
 
   commands_desc[0][0] = "Show OS information";
   commands_desc[1][0] = "Show all commands";
@@ -213,14 +214,14 @@ void show_help(char *command) {
   commands_desc[3][0] = "Clear the terminal";
   commands_desc[4][0] = "Show command history";
   commands_desc[5][0] = "Change color of OS";
-  commands_desc[5][1] = "-[element]: b: background, t: text, os: os theme";
-  commands_desc[5][2] = "-[type]: p: primary, s: secondary, s: success, e: "
-                        "errror, a: all, (not applicable "
-                        "for os theme)";
-  commands_desc[5][3] =
+  commands_desc[5][1] =
+      "-[target]: b: background, t: text, os: os theme, "
+      "pri: primary, sec: secondary, err: error, suc: success";
+  commands_desc[5][2] =
       "-[color]: red, green, yellow, blue, purple, cyan, white, "
       "black, bright (os only), dark (os only), light (os only)";
-  commands_desc[5][4] = "\nE.g.: setcolor -t -p -red";
+  commands_desc[5][3] =
+      "\nE.g.: setcolor -t red -b yellow -pri green -sec cyan";
   commands_desc[6][0] = "Show reference for a target";
   commands_desc[6][1] =
       "-[target]: uart, options: -baud <bits_per_second>, -dbits <5/6/7/8>, "
@@ -233,18 +234,11 @@ void show_help(char *command) {
       "-handshake CTS";
   commands_desc[7][0] = "Show current device information";
   commands_desc[7][1] = "-concise: show concise information";
-  commands_desc[7][2] = "-full: show full information";
+  commands_desc[7][2] = "-full (default): show full information";
   commands_desc[7][3] = "\nE.g.: showinfo -concise";
-  commands_desc[8][0] = "Authenticate user";
-  commands_desc[8][1] = "-[arg]: lg/reg";
-  commands_desc[8][2] = "-u: username";
-  commands_desc[8][3] = "-p: password";
-  commands_desc[8][4] = "-out: logout";
-  commands_desc[8][5] = "\nE.g.: auth -lg -u <username> -p <password>";
-  commands_desc[10][0] = (char *)0;
+  commands_desc[8][0] = (char *)0;
 
   // Display help menu
-  print_in_box("Help Menu");
   uart_puts("\n");
 
   // Display commands in tabular format
@@ -300,7 +294,7 @@ char *autocomplete_command(char *buffer) {
 }
 
 // Parse flags from the input
-void parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
+int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
   int i = 0;
   int j = 0;
   int k = 0;
@@ -337,14 +331,16 @@ void parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
     str_format(
         "\nToo many flags. Type 'help <command>' to see available flags.",
         OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-    return;
+    return 0;
   }
 
   // Check if the number of flags is less than the minimum required flags
   if (flag_count < min_flags) {
     str_format("\nToo few flags. Type 'help <command>' to see available flags.",
                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+    return 0;
   }
+  return flag_count;
 }
 
 // Parse target from the flags
@@ -487,14 +483,18 @@ void parse_command(char *input) {
     int MAX_FLAGS = 3;
 
     // Parse the flags
-    parse_flags(&input[i], flags, MAX_FLAGS, MIN_FLAGS);
+    int flag_count = parse_flags(&input[i], flags, MAX_FLAGS, MIN_FLAGS);
+    if (flag_count == 0) {
+      return;
+    }
+
     if (flags == (char **)0) {
       return;
     }
 
     char *color_option = (char *)0;
 
-    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+    for (int i = 0; i < flag_count; i++) {
       if (flags[i] == (char *)0) {
         break;
       }
@@ -632,16 +632,24 @@ void parse_command(char *input) {
           BaudRateConfig baud_rate = get_baud_rate(string_to_int(option));
 
           uart_puts("\n");
+
           str_format("Baud Rate Configuration\n", OS_CONFIG.PRIMARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
+
           str_format("IBRD: ", OS_CONFIG.PRIMARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
-          str_format(int_to_string(baud_rate.ibrd), OS_CONFIG.SECONDARY_COLOR,
+          char ibrd[MAX_CMD_SIZE];
+          int_to_string(baud_rate.ibrd, ibrd);
+          str_format(ibrd, OS_CONFIG.SECONDARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
+
           uart_puts("\n");
+
           str_format("FBRD: ", OS_CONFIG.PRIMARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
-          str_format(int_to_string(baud_rate.fbrd), OS_CONFIG.SECONDARY_COLOR,
+          char fbrd[MAX_CMD_SIZE];
+          int_to_string(baud_rate.fbrd, fbrd);
+          str_format(fbrd, OS_CONFIG.SECONDARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
           uart_puts("\n");
 
@@ -664,6 +672,98 @@ void parse_command(char *input) {
       str_format("Invalid command. Type 'help ref' to see available "
                  "targets.",
                  OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+      return;
+    }
+  } else if (is_equal(command, "showinfo")) {
+    uart_puts("\n\n");
+
+    // Extract the flags
+    char *flags[MAX_CMD_SIZE];
+
+    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+      flags[i] = (char *)0;
+    }
+
+    // Define the minimum and maximum flags required for the setcolor
+    // command
+    const int MIN_FLAGS = 0;
+    const int MAX_FLAGS = 1;
+
+    // Parse the flags
+    parse_flags(&input[i], flags, MAX_FLAGS, MIN_FLAGS);
+
+    // Tabulate the device information
+    char *keys[] = {"Board", "Value"};
+    char *values[MAX_ROWS][MAX_ROWS];
+
+    // Initialize the values array
+    initialize_values(values, 4);
+
+    // Get MAC Address
+    mBuf[0] = 12 * 4;       // Buffer size in bytes
+    mBuf[1] = MBOX_REQUEST; // Message Request Code (this is a request message)
+    mBuf[2] = 0x00010003;   // TAG Identifier: Get Mac Address
+    mBuf[3] = 8;
+    mBuf[4] = 0;
+    mBuf[5] = 0;
+    mBuf[6] = 0; // clear output buffer (response data are mBuf[5] & mBuf[6])
+    mBuf[7] = MBOX_TAG_LAST;
+    char mac_address[18];
+
+    if (mbox_call(ADDR(mBuf), MBOX_CH_PROP)) {
+      unsigned int num1 = 0x12005452;
+      unsigned int num2 = 0x00005734;
+
+      // Convert the MAC Address to a string
+      convertToMacAddress(num1, num2, mac_address);
+
+      values[0][0] = "MAC Address";
+      values[0][1] = mac_address;
+    } else {
+      str_format("Failed to query MAC Address.\n", OS_CONFIG.ERROR,
+                 OS_CONFIG.BACKGROUND_COLOR);
+    }
+
+    // Get revision number
+    mBuf[0] = 7 * 4;        // Buffer size in bytes
+    mBuf[1] = MBOX_REQUEST; // Message Request Code (this is a request message)
+    mBuf[2] = 0x00010002;   // TAG Identifier: Get Board Revision
+    mBuf[3] = 4;
+    mBuf[4] = 0;
+    mBuf[5] = 0; // clear output buffer (response data are mBuf[5])
+    mBuf[6] = MBOX_TAG_LAST;
+
+    if (mbox_call(ADDR(mBuf), MBOX_CH_PROP)) {
+      values[1][0] = "Board Revision Number";
+      values[1][1] = hex_to_string(mBuf[5]);
+    } else {
+      str_format("Failed to query Board Revision.\n", OS_CONFIG.ERROR,
+                 OS_CONFIG.BACKGROUND_COLOR);
+    }
+
+    tabulate(keys, 2, values, 2);
+
+    if (is_equal(flags[0], "v")) {
+
+      char *keys[] = {"Uart", "Value"};
+      char *values[MAX_ROWS][MAX_ROWS];
+
+      // Initialize the values array
+      initialize_values(values, 2);
+
+      // Get uart baud rate
+      values[0][0] = "UART Baud Rate (IBRD)";
+      char ibrd[10];
+      int_to_string(BAUD_RATE_CONFIG.ibrd, ibrd);
+      values[0][1] = ibrd;
+
+      values[1][0] = "UART Baud Rate (FBRD)";
+      char fbrd[10];
+      int_to_string(BAUD_RATE_CONFIG.fbrd, fbrd);
+      values[1][1] = fbrd;
+
+      uart_puts("\n");
+      tabulate(keys, 2, values, 2);
       return;
     }
   } else {

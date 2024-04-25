@@ -2,6 +2,7 @@
 #include "../global/global.h"
 #include "../helper/styler/styler.h"
 #include "../helper/utils/utils.h"
+#include "../mbox/mbox.h"
 #include "../uart/uart.h"
 
 void clear_current_command() {
@@ -25,7 +26,7 @@ void cli() {
     for (int i = 0; i < MAX_CMD_SIZE; i++) {
       cli_buffer[i] = '\0';
     }
-    uart_puts("\n");
+    // uart_puts("\n");
     str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR,
                OS_CONFIG.BACKGROUND_COLOR);
     is_new_command = 0;

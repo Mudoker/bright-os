@@ -9,7 +9,7 @@ void clear_current_command() {
   uart_puts("\033[2K\r");
 
   // Show prompt
-  str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR);
+  str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
 }
 
 void cli() {
@@ -26,7 +26,8 @@ void cli() {
       cli_buffer[i] = '\0';
     }
     uart_puts("\n");
-    str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR);
+    str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR,
+               OS_CONFIG.BACKGROUND_COLOR);
     is_new_command = 0;
     history_index = -1;
   }
@@ -67,7 +68,8 @@ void cli() {
       }
 
       index = len(cli_buffer);
-      uart_puts(cli_buffer);
+      str_format(cli_buffer, OS_CONFIG.SECONDARY_COLOR,
+                 OS_CONFIG.BACKGROUND_COLOR); // Print the command
 
     } else if (c == '+' && history_index <= command_stack.top_index) {
       was_down = 1;
@@ -81,7 +83,9 @@ void cli() {
 
       copy(cli_buffer, command_stack.command[history_index]);
       index = len(cli_buffer);
-      uart_puts(cli_buffer);
+
+      str_format(cli_buffer, OS_CONFIG.SECONDARY_COLOR,
+                 OS_CONFIG.BACKGROUND_COLOR); // Print the command
     }
   } else {
     // Get the command until newline
@@ -90,8 +94,10 @@ void cli() {
       if (index < MAX_CMD_SIZE - 1) {
         cli_buffer[index] = c;
         index++;
-        uart_sendc(c);
 
+        // Convert character to string and print
+        char str[2] = {c, '\0'};
+        str_format(str, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
       } else {
         uart_puts("\nCommand too long. Please try again.\n");
         index = 0;
@@ -123,10 +129,11 @@ int main() {
   uart_init();
 
   // Welcome message
-  //   os_greet();
+  os_greet();
 
   // OS loop
   while (1) {
+    uart_puts(OS_CONFIG.BACKGROUND_COLOR);
     cli();
   }
 

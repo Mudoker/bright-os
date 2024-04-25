@@ -9,7 +9,7 @@ char *commands[] = {"os",   "help",     "help <name>", "clr/cls/clear",
 
 void os_greet() {
   uart_puts("\n");
-  uart_puts("Triggering OS...\n");
+
   // Print OS logo
   str_format(OS_INF.ascii_art_logo, OS_CONFIG.PRIMARY_COLOR);
   uart_puts("\n");
@@ -166,12 +166,15 @@ void show_help(char *command) {
   char *values[MAX_ROWS][MAX_ROWS];
   char *commands_desc[MAX_ROWS][MAX_ROWS];
 
-  // Ref: Help command on Linux
-  uart_puts("\n\nBrightOS, Version 1.0\n");
-  uart_puts("These shell commands are defined internally. Type 'help' to see "
-            "this list.\n");
-  uart_puts("Type 'help name' to find out more about the function 'name'.\n");
-  uart_puts("A star (*) next to a name means that the command is disabled.\n");
+  // Ref: Help command on Linuxcommand
+  str_format("\n\nBrightOS, Version 1.0\n", OS_CONFIG.SECONDARY_COLOR);
+  str_format("These shell commands are defined internally. Type 'help' to see "
+             "this list.\n",
+             OS_CONFIG.SECONDARY_COLOR);
+  str_format("Type 'help name' to find out more about the function 'name'.\n",
+             OS_CONFIG.SECONDARY_COLOR);
+  str_format("A star (*) next to a name means that the command is disabled.\n",
+             OS_CONFIG.SECONDARY_COLOR);
 
   initialize_values(values, 11);        // Initialize the values array
   initialize_values(commands_desc, 11); // Initialize the commands_desc array
@@ -183,21 +186,21 @@ void show_help(char *command) {
   commands_desc[4][0] = "Show command history";
   commands_desc[5][0] = "Change color of OS";
   commands_desc[5][1] = "-[element]: b: background, t: text, os: os theme";
-  commands_desc[5][2] =
-      "-[type]: p: primary, s: secondary, a: all, (not applicable "
-      "for os theme)";
+  commands_desc[5][2] = "-[type]: p: primary, s: secondary, s: success, e: "
+                        "errror, a: all, (not applicable "
+                        "for os theme)";
   commands_desc[5][3] =
       "-[color]: red, green, yellow, blue, purple, cyan, white, "
       "black, bright (os only), dark (os only), light (os only)";
-  commands_desc[5][4] = "\nE.g.: setcolor -b -p -red";
+  commands_desc[5][4] = "\nE.g.: setcolor -t -p -red";
   commands_desc[6][0] = "Show reference for a target";
-  commands_desc[6][1] = "-[target]: os, option: -c -theme -<dark/light/bright>";
-  commands_desc[6][2] =
-      "-[target]: uart, options: -c -baud <bits_per_second>, -c "
-      "-dbits <5/6/7/8>, -c -sbits <1/2>, -c -par "
+  commands_desc[6][1] =
+      "-[target]: uart, options: -baud <bits_per_second>, -dbits <5/6/7/8>, "
+      "-sbits <1/2>, -par "
       "<none/even/odd>, -c -handshake <CTS/RTS>";
-  commands_desc[6][3] = "\nE.g.: ref -os -theme -dark";
-  commands_desc[6][4] =
+  commands_desc[6][2] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
+                        "none -c -handshake CTS";
+  commands_desc[6][3] =
       "\nE.g.: ref -uart -baud 9600 -dbits 8 -sbits 1 -par none "
       "-handshake CTS";
   commands_desc[7][0] = "Show current device information";
@@ -244,7 +247,8 @@ void show_help(char *command) {
       }
     }
     if (commands[i] == (char *)0) {
-      uart_puts("\nCommand not found.\n");
+      str_format("Command not found. Type 'help' to see available commands.\n",
+                 OS_CONFIG.ERROR);
       return;
     }
   }
@@ -281,7 +285,7 @@ char **parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
       j = 0; // Reset j for a new flag
       flag_count++;
 
-      while (input[i] != ' ' && input[i] != '\0' && j < MAX_CMD - 1) {
+      while (input[i] != '\0' && input[i + 1] != '-' && j < MAX_CMD - 1) {
         flag_buffer[k][j++] = input[i++];
       }
 
@@ -294,14 +298,16 @@ char **parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
 
   // Check if the number of flags exceeds the maximum allowed flags
   if (flag_count > max_flags) {
-    uart_puts(
-        "\nToo many flags. Type 'help <command>' to see available flags.");
+    str_format(
+        "\nToo many flags. Type 'help <command>' to see available flags.",
+        OS_CONFIG.ERROR);
     return (char **)0;
   }
 
   // Check if the number of flags is less than the minimum required flags
   if (flag_count < min_flags) {
-    uart_puts("\nToo few flags. Type 'help <command>' to see required flags.");
+    str_format("\nToo few flags. Type 'help <command>' to see available flags.",
+               OS_CONFIG.ERROR);
     return (char **)0;
   }
 
@@ -328,7 +334,8 @@ char *to_color(char *flag) {
   } else if (is_equal(flag, "black")) {
     color_option = COLOR.BLACK;
   } else {
-    uart_puts("\nInvalid color. Type 'help setcolor' to see available colors.");
+    str_format("\nInvalid color. Type 'help setcolor' to see available colors.",
+               OS_CONFIG.ERROR);
     return (char *)0;
   }
 
@@ -402,8 +409,8 @@ void parse_command(char *input) {
     if (is_equal(flags[0], "b")) {
       // b flag only requires color
       if (flags[max_flags - 1] != (char *)0) {
-        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
-                  "commands.");
+        str_format("\nInvalid command. Type 'help setcolor' to see available ",
+                   OS_CONFIG.ERROR);
         return;
       } else {
         color_option = to_color(flags[1]);
@@ -418,8 +425,8 @@ void parse_command(char *input) {
 
       // If missing flags (type or color)
       if (flags[2] == (char *)0) {
-        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
-                  "commands.");
+        str_format("\nInvalid command. Type 'help setcolor' to see available ",
+                   OS_CONFIG.ERROR);
         return;
       }
 
@@ -436,15 +443,19 @@ void parse_command(char *input) {
       } else if (is_equal(flags[1], "a")) {
         OS_CONFIG.PRIMARY_COLOR = color_option;
         OS_CONFIG.SECONDARY_COLOR = color_option;
+      } else if (is_equal(flags[1], "s")) {
+        OS_CONFIG.SUCCESS = color_option;
+      } else if (is_equal(flags[1], "e")) {
+        OS_CONFIG.ERROR = color_option;
       } else {
-        uart_puts("\nInvalid type. Type 'help setcolor' to see available "
-                  "types.");
+        str_format("\nInvalid type. Type 'help setcolor' to see available ",
+                   OS_CONFIG.ERROR);
         return;
       }
     } else if (is_equal(flags[0], "os")) {
       if (flags[2] != (char *)0) {
-        uart_puts("\nInvalid command. Type 'help setcolor' to see available "
-                  "commands.");
+        str_format("\nInvalid command. Type 'help setcolor' to see available ",
+                   OS_CONFIG.ERROR);
         return;
       }
 
@@ -455,21 +466,112 @@ void parse_command(char *input) {
         OS_CONFIG.PRIMARY_COLOR = COLOR.CYAN;
         OS_CONFIG.SECONDARY_COLOR = COLOR.BLACK;
       } else if (is_equal(flags[1], "dark")) {
-        OS_CONFIG.PRIMARY_COLOR = COLOR.GREEN;
+        OS_CONFIG.PRIMARY_COLOR = OS_CONFIG.SUCCESS;
         OS_CONFIG.SECONDARY_COLOR = COLOR.PURPLE;
       } else {
-        uart_puts("\nInvalid theme. Type 'help setcolor' to see available "
-                  "themes.");
+        str_format("\nInvalid theme. Type 'help setcolor' to see available ",
+                   OS_CONFIG.ERROR);
         return;
       }
     } else {
-      uart_puts("\nInvalid command. Type 'help setcolor' to see available "
-                "elements.");
+      str_format("\nInvalid command. Type 'help setcolor' to see available ",
+                 OS_CONFIG.ERROR);
       return;
     }
 
     // Success message
-    uart_puts("\nColor changed successfully.\n");
+    str_format("Color changed successfully.\n", OS_CONFIG.SUCCESS);
     return;
+  } else if (is_equal(command, "ref")) {
+    // Extract the flags
+    char *flags[MAX_CMD_SIZE];
+
+    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+      flags[i] = (char *)0;
+    }
+
+    // Define the minimum and maximum flags required for the setcolor command
+    const int MIN_FLAGS = 2;
+    const int MAX_FLAGS = 10;
+
+    // Parse the flags
+    parse_flags(&input[i], flags, MAX_FLAGS, MIN_FLAGS);
+    if (flags == (char **)0) {
+      return;
+    }
+
+    if (is_equal(flags[0], "uart")) {
+      for (int i = 1; i < MAX_FLAGS; i++) {
+        if (flags[i] == (char *)0) {
+          break;
+        }
+
+        char target[MAX_CMD_SIZE];
+        char option[MAX_CMD_SIZE];
+
+        // Extract the target and option
+        int k = 0;
+        while (flags[i][k] != '\0' && flags[i][k] != ' ') {
+          target[k] = flags[i][k];
+          k++;
+        }
+
+        target[k] = '\0'; // Null-terminate the target
+
+        // Skip spaces after target
+        while (flags[i][k] == ' ') {
+          k++;
+        }
+
+        // Extract the option
+        int l = 0;
+        while (flags[i][k] != '\0') {
+          option[l++] = flags[i][k++];
+        }
+
+        option[l] = '\0'; // Null-terminate the option
+
+        if (is_equal(target, "baud")) {
+          if (option == (char *)0) {
+            str_format("Invalid command. Type 'help ref' to see available "
+                       "targets.",
+                       OS_CONFIG.ERROR);
+            return;
+          }
+
+          BaudRateConfig baud_rate = get_baud_rate(string_to_int(option));
+
+          uart_puts("\n");
+          str_format("Baud Rate Configuration\n\n", OS_CONFIG.PRIMARY_COLOR);
+          str_format("IBRD: ", OS_CONFIG.PRIMARY_COLOR);
+          str_format(int_to_string(baud_rate.ibrd), OS_CONFIG.SECONDARY_COLOR);
+          uart_puts("\n");
+          str_format("FBRD: ", OS_CONFIG.PRIMARY_COLOR);
+          str_format(int_to_string(baud_rate.fbrd), OS_CONFIG.SECONDARY_COLOR);
+          uart_puts("\n");
+
+          BAUD_RATE_CONFIG.ibrd = baud_rate.ibrd;
+          BAUD_RATE_CONFIG.fbrd = baud_rate.fbrd;
+
+          // Success message
+          str_format("\nBaud rate set successfully.\n", OS_CONFIG.SUCCESS);
+        } else {
+          uart_puts("\n");
+
+          str_format("Invalid command. Type 'help ref' to see available "
+                     "targets.",
+                     OS_CONFIG.ERROR);
+          return;
+        }
+      }
+    } else {
+      str_format("Invalid command. Type 'help ref' to see available "
+                 "targets.",
+                 OS_CONFIG.ERROR);
+      return;
+    }
+  } else {
+    str_format("I\nCommand not found. Type 'help' to see available commands.\n",
+               OS_CONFIG.ERROR);
   }
 }

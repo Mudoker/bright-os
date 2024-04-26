@@ -716,8 +716,8 @@ void parse_command(char *input) {
           }
 
           // Success message
-          str_format("\n\nHandshake set to CTS/RTS.\n", OS_CONFIG.SUCCESS,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format("\n\nHandshake configured successfully.\n",
+                     OS_CONFIG.SUCCESS, OS_CONFIG.BACKGROUND_COLOR);
 
           HANDSHAKE_CONFIG = string_to_int(option);
         } else {

@@ -100,7 +100,8 @@ void cli() {
         char str[2] = {c, '\0'};
         str_format(str, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
       } else {
-        uart_puts("\nCommand too long. Please try again.\n");
+        str_format("Command too long\n", OS_CONFIG.ERROR,
+                   OS_CONFIG.BACKGROUND_COLOR);
         index = 0;
         is_new_command = 1;
       }

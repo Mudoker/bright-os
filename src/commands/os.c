@@ -657,7 +657,9 @@ void parse_command(char *input) {
           BAUD_RATE_CONFIG.fbrd = baud_rate.fbrd;
 
           // Success message
-          str_format("\nBaud rate set successfully.\n", OS_CONFIG.SUCCESS,
+          str_format("\nBaud rate set successfully.\n\n", OS_CONFIG.SUCCESS,
+                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format("BrightOS>  " , OS_CONFIG.PRIMARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
         } else {
           uart_puts("\n");
@@ -668,6 +670,12 @@ void parse_command(char *input) {
           return;
         }
       }
+
+      while (!(UART0_FR & UART0_FR_TXFE)) {
+        // Wait until the TX FIFO is empty
+      }
+
+      uart_init(); // Initialize UART after configuring baud rate
     } else {
       str_format("Invalid command. Type 'help ref' to see available "
                  "targets.",

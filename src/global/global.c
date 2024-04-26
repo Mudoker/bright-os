@@ -138,5 +138,5 @@ BaudRateConfig BAUD_RATE_CONFIG = {.ibrd = 26, .fbrd = 3};
 int IS_REINIT_UART = 0;
 int DATA_BITS_CONFIG = 8;
 int STOP_BIT_CONFIG = 1;
-char *PARITY_CONFIG = "none";
-char *HANDSHAKE_CONFIG = "none";
+int PARITY_CONFIG = 0;
+int HANDSHAKE_CONFIG = 0;

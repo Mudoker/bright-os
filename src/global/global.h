@@ -100,7 +100,7 @@ extern BaudRateConfig BAUD_RATE_CONFIG;
 extern int DATA_BITS_CONFIG;
 extern int IS_REINIT_UART;
 extern int STOP_BIT_CONFIG;
-extern char *PARITY_CONFIG;
-extern char *HANDSHAKE_CONFIG;
+extern int PARITY_CONFIG;
+extern int HANDSHAKE_CONFIG;
 
 #endif

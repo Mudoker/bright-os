@@ -73,10 +73,28 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
 
   // Print values
   for (int i = 0; i < numValues; i++) {
+    if (is_equal(values[i][0], "Parity")) {
+      if (is_equal(values[i][1], "0")) {
+        values[i][1] = "None";
+      } else if (is_equal(values[i][1], "1")) {
+        values[i][1] = "Odd";
+      } else if (is_equal(values[i][1], "2")) {
+        values[i][1] = "Even";
+      }
+    } else if (is_equal(values[i][0], "Handshake")) {
+      if (is_equal(values[i][1], "0")) {
+        values[i][1] = "None";
+      } else if (is_equal(values[i][1], "1")) {
+        values[i][1] = "RTS/CTS";
+      } else if (is_equal(values[i][1], "2")) {
+        values[i][1] = "Invalid";
+      }
+    }
     // Print values for current row
     for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
       str_format(values[i][j], OS_CONFIG.SECONDARY_COLOR,
                  OS_CONFIG.BACKGROUND_COLOR);
+
       // Adjust spacing based on the maximum length of the column
       for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 4;
            k++) { // Added 4 spaces for padding

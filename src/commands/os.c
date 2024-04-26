@@ -229,11 +229,10 @@ void show_help(char *command) {
       "-sbits <1/2>, -par "
       "<none/even/odd>, -c -handshake <CTS/RTS>";
   commands_desc[6][2] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
-                        "none -c -handshake CTS/RTS";
+                        "none -c -handshake 1";
   commands_desc[7][0] = "Show current device information";
-  commands_desc[7][1] = "-concise: show concise information";
-  commands_desc[7][2] = "-full (default): show full information";
-  commands_desc[7][3] = "\nE.g.: showinfo -concise";
+  commands_desc[7][1] = "-v: show full information";
+  commands_desc[7][2] = "\nE.g.: showinfo -v";
   commands_desc[8][0] = (char *)0;
 
   // Display help menu
@@ -315,7 +314,7 @@ int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
         flag_buffer[k][j++] = input[i++];
       }
 
-      flag_buffer[k][j] = '\0'; // Null-terminate the flag string
+      flag_buffer[k][j] = '\0';  // Null-terminate the flag string
       flags[0] = flag_buffer[0]; // Assign the flag to the flags array
       flags[1] = flag_buffer[1]; // Assign the flag to the flags array
       k++;                       // Increment index for the flags array
@@ -690,31 +689,26 @@ void parse_command(char *input) {
             return;
           }
 
-          if (is_equal(option, "none")) {
-            // Set parity to none
-            // Success message
-            str_format("\n\nParity set to none.\n", OS_CONFIG.SUCCESS,
-                       OS_CONFIG.BACKGROUND_COLOR);
-          } else if (is_equal(option, "even")) {
-            // Set parity to even
-            // Success message
-            str_format("\n\nParity set to even.\n", OS_CONFIG.SUCCESS,
-                       OS_CONFIG.BACKGROUND_COLOR);
-          } else if (is_equal(option, "odd")) {
-            // Set parity to odd
-            // Success message
-            str_format("\n\nParity set to odd.\n", OS_CONFIG.SUCCESS,
-                       OS_CONFIG.BACKGROUND_COLOR);
-          } else {
+          int val = string_to_int(option);
+          if (val < 0 || val > 2) {
             str_format("\n\nInvalid parity. Parity must be either none, even "
                        "or odd.\n",
                        OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
           }
 
-          PARITY_CONFIG = option;
+          PARITY_CONFIG = val;
         } else if (is_equal(target, "handshake")) {
-          if (is_equal(option, "CTS/RTS") == 0) {
+          if (option == (char *)0) {
+            str_format("\n\nInvalid handshake. Handshake must be either "
+                       "CTS/RTS.\n",
+                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          int val = string_to_int(option);
+
+          if (val < 0 || val > 1) {
             str_format(
                 "\n\nInvalid handshake. Handshake must be either CTS/RTS.\n",
                 OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
@@ -725,7 +719,7 @@ void parse_command(char *input) {
           str_format("\n\nHandshake set to CTS/RTS.\n", OS_CONFIG.SUCCESS,
                      OS_CONFIG.BACKGROUND_COLOR);
 
-          HANDSHAKE_CONFIG = option;
+          HANDSHAKE_CONFIG = string_to_int(option);
         } else {
           uart_puts("\n");
 
@@ -765,7 +759,7 @@ void parse_command(char *input) {
     char *values[MAX_ROWS][MAX_ROWS];
 
     // Initialize the values array
-    initialize_values(values, 4);
+    initialize_values(values, 2);
 
     // Get MAC Address
     mBuf[0] = 12 * 4;       // Buffer size in bytes
@@ -817,7 +811,7 @@ void parse_command(char *input) {
       char *values[MAX_ROWS][MAX_ROWS];
 
       // Initialize the values array
-      initialize_values(values, 2);
+      initialize_values(values, 6);
 
       // Get uart baud rate
       values[0][0] = "UART Baud Rate (IBRD)";
@@ -831,20 +825,24 @@ void parse_command(char *input) {
       values[1][1] = fbrd;
 
       values[2][0] = "Data Bits";
-      char dbits[10];
+      char dbits[2];
       int_to_string(DATA_BITS_CONFIG, dbits);
       values[2][1] = dbits;
 
       values[3][0] = "Stop Bits";
-      char sbits[10];
+      char sbits[2];
       int_to_string(STOP_BIT_CONFIG, sbits);
       values[3][1] = sbits;
 
       values[4][0] = "Parity";
-      values[4][1] = PARITY_CONFIG;
+      char parity[2];
+      int_to_string(PARITY_CONFIG, parity);
+      values[4][1] = parity;
 
       values[5][0] = "Handshake";
-      values[5][1] = HANDSHAKE_CONFIG;
+      char handshake[2];
+      int_to_string(HANDSHAKE_CONFIG, handshake);
+      values[5][1] = handshake;
 
       uart_puts("\n");
       tabulate(keys, 2, values, 6);

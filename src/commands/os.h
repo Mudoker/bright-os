@@ -4,7 +4,7 @@
 #include "../global/global.h"
 #include "../uart/uart.h"
 
-#define MAX_LEN_HIST 10
+#define MAX_LEN_HIST 2000
 
 // Struct to store command stack
 typedef struct CommandStack {

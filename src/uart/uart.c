@@ -70,18 +70,18 @@ void uart_init() {
   }
 
   // Set parity
-  if (is_equal(PARITY_CONFIG, "none")) {
+  if (PARITY_CONFIG == 0) {
     UART0_LCRH &= ~UART0_LCRH_PEN;
-  } else if (is_equal(PARITY_CONFIG, "odd")) {
+  } else if (PARITY_CONFIG == 1) {
     UART0_LCRH |= UART0_LCRH_PEN;
     UART0_LCRH &= ~UART0_LCRH_EPS;
-  } else if (is_equal(PARITY_CONFIG, "even")) {
+  } else if (PARITY_CONFIG == 2) {
     UART0_LCRH |= UART0_LCRH_PEN;
     UART0_LCRH |= UART0_LCRH_EPS;
   }
 
   // Set Handshaking RTS/CTS
-  if (is_equal(HANDSHAKE_CONFIG, "RTS/CTS")) {
+  if (HANDSHAKE_CONFIG == 1) {
     UART0_CR |= UART0_CR_CTSEN | UART0_CR_RTSEN;
   } else {
     UART0_CR &= ~UART0_CR_CTSEN;
@@ -140,12 +140,12 @@ void uart_puts(char *s) {
 
 // Calculate baud rate
 BaudRateConfig get_baud_rate(int baud_rate) {
-  int valid_baud[] = {110,   300,   600,   1200,   2400,   4800,   9600,  14400,
+  int valid_baud[] = {300,   600,   1200,  2400,   4800,   9600,   14400,
                       19200, 38400, 57600, 921600, 230400, 460800, 115200};
 
   BaudRateConfig config;
 
-  for (int i = 0; i <= 14; i++) {
+  for (int i = 0; i <= 13; i++) {
     if (baud_rate == valid_baud[i]) {
       uart_puts("\n\nBaud rate set to ");
       uart_dec(baud_rate);
@@ -153,12 +153,12 @@ BaudRateConfig get_baud_rate(int baud_rate) {
       break;
     }
 
-    if (i == 14) {
+    if (i == 13) {
       // Return default baud rate
       str_format("\n\nInvalid baud rate \n", OS_CONFIG.ERROR,
                  OS_CONFIG.BACKGROUND_COLOR);
 
-      str_format("Supported values: 110, 300, 1200, 2400, 4800, 9600, "
+      str_format("Supported values: 300, 1200, 2400, 4800, 9600, "
                  "19200, 38400, 57600, 115200, 230400, 460800, 921600\n\n",
                  OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
 

@@ -297,26 +297,25 @@ int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
   int j = 0;
   int k = 0;
   int flag_count = 0;
-  char flag_buffer[MAX_CMD_SIZE][MAX_CMD];
+  char flag_buffer[MAX_CMD_SIZE][MAX_CMD_SIZE];
 
   for (int i = 0; i < MAX_CMD_SIZE; i++) {
-    for (int j = 0; j < MAX_CMD; j++) {
+    for (int j = 0; j < MAX_CMD_SIZE; j++) {
       flag_buffer[i][j] = '\0';
     }
   }
 
-  while (input[i] != '\0' && k < MAX_CMD) {
+  while (input[i] != '\0' && k < MAX_CMD_SIZE) {
     if (input[i] == '-') {
       i++;
       j = 0; // Reset j for a new flag
       flag_count++;
 
-      while (input[i] != '\0' && input[i + 1] != '-' && j < MAX_CMD - 1) {
+      while (input[i] != '\0' && input[i + 1] != '-' && j < MAX_CMD_SIZE - 1) {
         flag_buffer[k][j++] = input[i++];
       }
 
       flag_buffer[k][j] = '\0'; // Null-terminate the flag string
-      // flags[k] = flag_buffer[k]; // Assign the flag to the flags array
       flags[0] = flag_buffer[0]; // Assign the flag to the flags array
       flags[1] = flag_buffer[1]; // Assign the flag to the flags array
       k++;                       // Increment index for the flags array
@@ -426,7 +425,7 @@ char *to_color(char *flag, int type) {
 // Parse and execute command
 void parse_command(char *input) {
   // Initialize variables
-  char command[MAX_CMD];
+  char command[MAX_CMD_SIZE];
   int i, j;
 
   // Extract command from input
@@ -443,7 +442,7 @@ void parse_command(char *input) {
   // Check for various commands
   if (is_equal(command, "help")) {
     // Extract the command to get help for
-    char help_command[MAX_CMD];
+    char help_command[MAX_CMD_SIZE];
     j = 0;
     while (input[i] != '\0') {
       help_command[j++] = input[i++];
@@ -831,8 +830,24 @@ void parse_command(char *input) {
       int_to_string(BAUD_RATE_CONFIG.fbrd, fbrd);
       values[1][1] = fbrd;
 
+      values[2][0] = "Data Bits";
+      char dbits[10];
+      int_to_string(DATA_BITS_CONFIG, dbits);
+      values[2][1] = dbits;
+
+      values[3][0] = "Stop Bits";
+      char sbits[10];
+      int_to_string(STOP_BIT_CONFIG, sbits);
+      values[3][1] = sbits;
+
+      values[4][0] = "Parity";
+      values[4][1] = PARITY_CONFIG;
+
+      values[5][0] = "Handshake";
+      values[5][1] = HANDSHAKE_CONFIG;
+
       uart_puts("\n");
-      tabulate(keys, 2, values, 2);
+      tabulate(keys, 2, values, 6);
       return;
     }
   } else {

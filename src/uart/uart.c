@@ -116,7 +116,7 @@ char uart_getc() {
   do {
     __asm volatile("nop");
   } while (
-      (is_equal(HANDSHAKE_CONFIG, "RTS/CTS") && (UART0_FR & UART0_FR_CTS)) ||
+      // (is_equal(HANDSHAKE_CONFIG, "RTS/CTS") && (UART0_FR & UART0_FR_CTS)) ||
       (UART0_FR & UART0_FR_RXFE));
 
   /* read it and return */

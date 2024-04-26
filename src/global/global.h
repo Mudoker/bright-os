@@ -88,7 +88,6 @@ typedef struct {
 
 // Configuration settings
 #define MAX_CMD_SIZE 100 // Maximum command size
-#define MAX_CMD 50       // Maximum number of commands
 #define MAX_STR_LEN 1000 // Maximum number of string length
 
 // Global variables

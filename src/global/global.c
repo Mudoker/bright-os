@@ -104,3 +104,7 @@ OsConfig OS_CONFIG = {.PRIMARY_COLOR = "\033[0;33m",
                       .THEME = (char *)0};
 
 BaudRateConfig BAUD_RATE_CONFIG = {.ibrd = 26, .fbrd = 3};
+
+int DATA_BITS_CONFIG = 8;
+
+int IS_REINIT_UART = 0;

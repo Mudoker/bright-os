@@ -45,20 +45,23 @@ void uart_init() {
   UART0_ICR = 0x7FF;
 
   /* Set integer & fractional part of Baud rate */
-  /* Divider = UART_CLOCK / (16 * Baud) */
-  /* Default UART_CLOCK = 48MHz (old firmware it was 3MHz) */
-  /* Integer part register UART0_IBRD = integer part of Divider */
-  /* Fraction part register UART0_FBRD = (Fractional part * 64) + 0.5 */
-
-  // 115200 baud
   UART0_IBRD = BAUD_RATE_CONFIG.ibrd;
   UART0_FBRD = BAUD_RATE_CONFIG.fbrd;
 
   /* Set up the Line Control Register */
   /* Enable FIFO */
-  /* Set length to 8 bit */
   /* Defaults for other bits are No parity, 1 stop bit */
-  UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+
+  // Set data bits
+  if (DATA_BITS_CONFIG == 5) {
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+  } else if (DATA_BITS_CONFIG == 6) {
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+  } else if (DATA_BITS_CONFIG == 7) {
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+  } else if (DATA_BITS_CONFIG == 8) {
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+  }
 
   /* Enable UART0, receive, and transmit */
   UART0_CR = 0x301; // enable Tx, Rx, FIFO
@@ -113,26 +116,33 @@ void uart_puts(char *s) {
 // Calculate baud rate
 BaudRateConfig get_baud_rate(int baud_rate) {
   int valid_baud[] = {110,   300,   600,   1200,   2400,   4800,   9600,  14400,
-                      19200, 38400, 57600, 115200, 230400, 460800, 921600};
+                      19200, 38400, 57600, 921600, 230400, 460800, 115200};
 
-  for (int i = 0; i < 10; i++) {
+  BaudRateConfig config;
+
+  for (int i = 0; i <= 14; i++) {
     if (baud_rate == valid_baud[i]) {
+      uart_puts("\n\nBaud rate set to ");
+      uart_dec(baud_rate);
+      uart_puts("\n");
       break;
     }
 
     if (i == 14) {
       // Return default baud rate
-      str_format("\n\nInvalid baud rate. Defaulting to 115200\n", OS_CONFIG.ERROR,
+      str_format("\n\nInvalid baud rate \n", OS_CONFIG.ERROR,
                  OS_CONFIG.BACKGROUND_COLOR);
 
-      str_format("Available baud rates: 110, 300, 1200, 2400, 4800, 9600, "
+      str_format("Supported values: 110, 300, 1200, 2400, 4800, 9600, "
                  "19200, 38400, 57600, 115200, 230400, 460800, 921600\n\n",
                  OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
-      baud_rate = 115200;
+
+      str_format("Reverting... \n", OS_CONFIG.ERROR,
+                 OS_CONFIG.BACKGROUND_COLOR);
+      config = BAUD_RATE_CONFIG;
+      return config;
     }
   }
-
-  BaudRateConfig config;
 
   // Calculate Divider
   float divider = (float)UART_CLK / (16.0f * baud_rate);

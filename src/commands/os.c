@@ -1,4 +1,5 @@
 #include "os.h"
+#include "../cli/kernel.h"
 #include "../global/global.h"
 #include "../helper/styler/styler.h"
 #include "../helper/utils/utils.h"
@@ -621,14 +622,13 @@ void parse_command(char *input) {
 
         parse_target(flags[i], target, option);
 
-        if (is_equal(target, "baud")) {
-          if (option == (char *)0) {
-            str_format(
-                "Invalid command. Type 'help ref' to see available targets.",
-                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-            return;
-          }
+        if (option == (char *)0) {
+          str_format("Invalid Value. Type 'help ref' to see available targets.",
+                     OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+          return;
+        }
 
+        if (is_equal(target, "baud")) {
           BaudRateConfig baud_rate = get_baud_rate(string_to_int(option));
 
           uart_puts("\n");
@@ -657,25 +657,31 @@ void parse_command(char *input) {
           BAUD_RATE_CONFIG.fbrd = baud_rate.fbrd;
 
           // Success message
-          str_format("\nBaud rate set successfully.\n\n", OS_CONFIG.SUCCESS,
+          str_format("\nBaud rate set successfully.\n", OS_CONFIG.SUCCESS,
+                     OS_CONFIG.BACKGROUND_COLOR);
+        } else if (is_equal(target, "dbits")) {
+          DATA_BITS_CONFIG = string_to_int(option);
+
+          if (DATA_BITS_CONFIG < 5 || DATA_BITS_CONFIG > 8) {
+            str_format(
+                "\n\nInvalid data bits. Data bits must be between 5 and 8.\n",
+                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          // Success message
+          str_format("\n\nData bits set successfully.\n", OS_CONFIG.SUCCESS,
                      OS_CONFIG.BACKGROUND_COLOR);
         } else {
           uart_puts("\n");
 
-          str_format("Invalid command. Type 'help ref' to see available "
+          str_format("\n\nInvalid command. Type 'help ref' to see available "
                      "targets.",
                      OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
           return;
         }
       }
-      str_format("BrightOS>  ", OS_CONFIG.PRIMARY_COLOR,
-                 OS_CONFIG.BACKGROUND_COLOR);
-                 
-      while (!(UART0_FR & UART0_FR_TXFE)) {
-        // Wait until the TX FIFO is empty
-      }
-
-      uart_init(); // Initialize UART after configuring baud rate
+      IS_REINIT_UART = 1;
     } else {
       str_format("Invalid command. Type 'help ref' to see available "
                  "targets.",

@@ -98,5 +98,7 @@ extern Acknowledgement ACK;
 extern Styler STYLER;
 extern OsConfig OS_CONFIG;
 extern BaudRateConfig BAUD_RATE_CONFIG;
+extern int DATA_BITS_CONFIG;
+extern int IS_REINIT_UART;
 
 #endif

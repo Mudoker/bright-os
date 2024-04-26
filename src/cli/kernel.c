@@ -1,9 +1,4 @@
-#include "../commands/os.h"
-#include "../global/global.h"
-#include "../helper/styler/styler.h"
-#include "../helper/utils/utils.h"
-#include "../mbox/mbox.h"
-#include "../uart/uart.h"
+#include "./kernel.h"
 
 void clear_current_command() {
   // Clear the current command
@@ -31,6 +26,16 @@ void cli() {
                OS_CONFIG.BACKGROUND_COLOR);
     is_new_command = 0;
     history_index = -1;
+  }
+
+  if (IS_REINIT_UART) {
+    while (!(UART0_FR & UART0_FR_TXFE)) {
+      // Wait until the TX FIFO is empty
+    }
+
+    // Reinitialize UART
+    uart_init();
+    IS_REINIT_UART = 0;
   }
 
   // Get command from user

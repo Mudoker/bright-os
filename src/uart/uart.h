@@ -53,6 +53,7 @@
 #define UART0_LCRH_EPS (1 << 2)  /* EPS  = even parity select */
 #define UART0_LCRH_PEN (1 << 1)  /* PEN  = parity enable */
 #define UART0_LCRH_BRK (1 << 0)  /* BRK  = send break after next character */
+
 /* CR = Control Register */
 /*   To enable transmission TXE and UARTEN must be set to 1 */
 /*   To enable reception RXE and UARTEN must be set to 1 */

@@ -1,5 +1,6 @@
 #include "./uart.h"
 #include "../helper/styler/styler.h"
+#include "../helper/utils/utils.h"
 
 /**
  * Set baud rate and characteristics (115200 8N1) and map to GPIO
@@ -49,8 +50,6 @@ void uart_init() {
   UART0_FBRD = BAUD_RATE_CONFIG.fbrd;
 
   /* Set up the Line Control Register */
-  /* Enable FIFO */
-  /* Defaults for other bits are No parity, 1 stop bit */
 
   // Set data bits
   if (DATA_BITS_CONFIG == 5) {
@@ -61,6 +60,32 @@ void uart_init() {
     UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
   } else if (DATA_BITS_CONFIG == 8) {
     UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+  }
+
+  // Set stop bits
+  if (STOP_BIT_CONFIG == 1) {
+    UART0_LCRH &= ~UART0_LCRH_STP2;
+  } else if (STOP_BIT_CONFIG == 2) {
+    UART0_LCRH |= UART0_LCRH_STP2;
+  }
+
+  // Set parity
+  if (is_equal(PARITY_CONFIG, "none")) {
+    UART0_LCRH &= ~UART0_LCRH_PEN;
+  } else if (is_equal(PARITY_CONFIG, "odd")) {
+    UART0_LCRH |= UART0_LCRH_PEN;
+    UART0_LCRH &= ~UART0_LCRH_EPS;
+  } else if (is_equal(PARITY_CONFIG, "even")) {
+    UART0_LCRH |= UART0_LCRH_PEN;
+    UART0_LCRH |= UART0_LCRH_EPS;
+  }
+
+  // Set Handshaking RTS/CTS
+  if (is_equal(HANDSHAKE_CONFIG, "RTS/CTS")) {
+    UART0_CR |= UART0_CR_CTSEN | UART0_CR_RTSEN;
+  } else {
+    UART0_CR &= ~UART0_CR_CTSEN;
+    UART0_CR &= ~UART0_CR_RTSEN;
   }
 
   /* Enable UART0, receive, and transmit */
@@ -88,11 +113,11 @@ char uart_getc() {
   char c = 0;
 
   /* Check Flags Register */
-  /* Wait until Receiver is not empty
-   * (at least one byte data in receive fifo)*/
   do {
     __asm volatile("nop");
-  } while (UART0_FR & UART0_FR_RXFE);
+  } while (
+      (is_equal(HANDSHAKE_CONFIG, "RTS/CTS") && (UART0_FR & UART0_FR_CTS)) ||
+      (UART0_FR & UART0_FR_RXFE));
 
   /* read it and return */
   c = (unsigned char)(UART0_DR);
@@ -174,6 +199,7 @@ void uart_hex(unsigned int num) {
     uart_sendc(digit);
   }
 }
+
 /**
  * Display a value in decimal format
  */

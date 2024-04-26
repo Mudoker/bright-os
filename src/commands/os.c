@@ -229,10 +229,7 @@ void show_help(char *command) {
       "-sbits <1/2>, -par "
       "<none/even/odd>, -c -handshake <CTS/RTS>";
   commands_desc[6][2] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
-                        "none -c -handshake CTS";
-  commands_desc[6][3] =
-      "\nE.g.: ref -uart -baud 9600 -dbits 8 -sbits 1 -par none "
-      "-handshake CTS";
+                        "none -c -handshake CTS/RTS";
   commands_desc[7][0] = "Show current device information";
   commands_desc[7][1] = "-concise: show concise information";
   commands_desc[7][2] = "-full (default): show full information";
@@ -672,6 +669,64 @@ void parse_command(char *input) {
           // Success message
           str_format("\n\nData bits set successfully.\n", OS_CONFIG.SUCCESS,
                      OS_CONFIG.BACKGROUND_COLOR);
+        } else if (is_equal(target, "sbits")) {
+          int val = string_to_int(option);
+          if (val != 1 && val != 2) {
+            str_format(
+                "\n\nInvalid stop bits. Stop bits must be either 1 or 2.\n",
+                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          STOP_BIT_CONFIG = val;
+
+          // Success message
+          str_format("\n\nStop bits set successfully.\n", OS_CONFIG.SUCCESS,
+                     OS_CONFIG.BACKGROUND_COLOR);
+        } else if (is_equal(target, "par")) {
+          if (option == (char *)0) {
+            str_format("\n\nInvalid parity. Parity must be either none, even "
+                       "or odd.\n",
+                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          if (is_equal(option, "none")) {
+            // Set parity to none
+            // Success message
+            str_format("\n\nParity set to none.\n", OS_CONFIG.SUCCESS,
+                       OS_CONFIG.BACKGROUND_COLOR);
+          } else if (is_equal(option, "even")) {
+            // Set parity to even
+            // Success message
+            str_format("\n\nParity set to even.\n", OS_CONFIG.SUCCESS,
+                       OS_CONFIG.BACKGROUND_COLOR);
+          } else if (is_equal(option, "odd")) {
+            // Set parity to odd
+            // Success message
+            str_format("\n\nParity set to odd.\n", OS_CONFIG.SUCCESS,
+                       OS_CONFIG.BACKGROUND_COLOR);
+          } else {
+            str_format("\n\nInvalid parity. Parity must be either none, even "
+                       "or odd.\n",
+                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          PARITY_CONFIG = option;
+        } else if (is_equal(target, "handshake")) {
+          if (is_equal(option, "CTS/RTS") == 0) {
+            str_format(
+                "\n\nInvalid handshake. Handshake must be either CTS/RTS.\n",
+                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            return;
+          }
+
+          // Success message
+          str_format("\n\nHandshake set to CTS/RTS.\n", OS_CONFIG.SUCCESS,
+                     OS_CONFIG.BACKGROUND_COLOR);
+
+          HANDSHAKE_CONFIG = option;
         } else {
           uart_puts("\n");
 

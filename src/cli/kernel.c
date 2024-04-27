@@ -96,11 +96,14 @@ void cli() {
       // Move forward in history (towards older commands)
       clear_current_command();
 
-      history_index = (history_index == command_stack.top_index)
-                          ? command_stack.top_index
-                          : history_index + 1;
+      history_index++;
 
-      copy(cli_buffer, command_stack.command[history_index]);
+      if (history_index > command_stack.top_index) {
+        copy(cli_buffer, "");
+      } else {
+        copy(cli_buffer, command_stack.command[history_index]);
+      }
+
       index = len(cli_buffer);
 
       str_format(cli_buffer, OS_CONFIG.SECONDARY_COLOR,

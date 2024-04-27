@@ -15,11 +15,7 @@ void uart_init() {
     // Configure GPIO 16 as CTS and GPIO 17 as RTS
     r = GPFSEL1;
     r &= ~((7 << 18) | (7 << 21)); // clear bits 21-18 (FSEL17, FSEL16)
-    r |= (7 << 18) | (7 << 21);    // Set value 0b100 (select ALT3)
-
-    // Turn off GPIO 14 and 15
-    r &= ~((7 << 12) | (7 << 15)); // clear bits 17-12 (FSEL15, FSEL14)
-
+    r |= (7 << 18) | (7 << 21);    // Set value 0b111 (select ALT3)
     GPFSEL1 = r;
 
     // Enable pull-up on GPIO 16, 17
@@ -36,40 +32,37 @@ void uart_init() {
     } // waiting 150 cycles
 
     GPPUDCLK0 = 0; // flush GPIO setup
-
-    // Enable RTS/CTS
-    UART0_CR |= UART0_CR_CTSEN | UART0_CR_RTSEN;
   } else {
-    // Configure GPIO 14 as TXD and GPIO 15 as RXD
     r = GPFSEL1;
-    r &= ~((7 << 12) | (7 << 15)); // clear bits 17-12 (FSEL15, FSEL14)
-    r |= (0b100 << 12) |
-         (0b100 << 15); // Set value 0b100 (select ALT0: TXD0/RXD0)
-
-    // Turn off GPIO 16 and 17
-    r &= ~((7 << 18) | (7 << 21)); // clear bits 21-18 (FSEL17, FSEL16)
-
+    r &= ~((7 << 18) | (7 << 21)); // clear bits 23-18 (FSEL17, FSEL16)
     GPFSEL1 = r;
-
-    // Enable pull-up on GPIO 14, 15
-    GPPUD = 0; // No pull up/down control
-    r = 150;
-    while (r--) {
-      __asm volatile("nop");
-    } // waiting 150 cycles
-
-    GPPUDCLK0 = (1 << 14) | (1 << 15); // enable clock for GPIO 14, 15
-    r = 150;
-    while (r--) {
-      __asm volatile("nop");
-    } // waiting 150 cycles
-
-    GPPUDCLK0 = 0; // flush GPIO setup
-
-    // Disable RTS/CTS
-    UART0_CR &= ~UART0_CR_CTSEN;
-    UART0_CR &= ~UART0_CR_RTSEN;
   }
+
+  // Configure GPIO 14 as TXD and GPIO 15 as RXD
+  r = GPFSEL1;
+  r &= ~((7 << 12) | (7 << 15)); // clear bits 17-12 (FSEL15, FSEL14)
+  r |=
+      (0b100 << 12) | (0b100 << 15); // Set value 0b100 (select ALT0: TXD0/RXD0)
+
+  // Turn off GPIO 16 and 17
+  r &= ~((7 << 18) | (7 << 21)); // clear bits 21-18 (FSEL17, FSEL16)
+
+  GPFSEL1 = r;
+
+  // Enable pull-up on GPIO 14, 15
+  GPPUD = 0; // No pull up/down control
+  r = 150;
+  while (r--) {
+    __asm volatile("nop");
+  } // waiting 150 cycles
+
+  GPPUDCLK0 = (1 << 14) | (1 << 15); // enable clock for GPIO 14, 15
+  r = 150;
+  while (r--) {
+    __asm volatile("nop");
+  } // waiting 150 cycles
+
+  GPPUDCLK0 = 0; // flush GPIO setup
 
   /* Mask all interrupts */
   UART0_IMSC = 0;
@@ -84,7 +77,7 @@ void uart_init() {
   /* Set up the Line Control Register */
   // Clean previous settings
   UART0_LCRH = 0;
-  
+
   // Set data bits
   if (DATA_BITS_CONFIG == 5) {
     UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
@@ -115,10 +108,13 @@ void uart_init() {
   }
 
   /* Enable UART0, receive, and transmit */
+  UART0_CR = 0x301; // enable Tx, Rx, FIFO
+
+  // check for handshake mode
   if (HANDSHAKE_CONFIG == 1) {
-    UART0_CR = 0xC301; // enable Tx, Rx, FIFO
+    UART0_CR |= UART0_CR_RTSEN | UART0_CR_CTSEN; // enable RTS, CTS
   } else {
-    UART0_CR = 0x301; // enable Tx, Rx, FIFO
+    UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN); // enable RTS
   }
 }
 

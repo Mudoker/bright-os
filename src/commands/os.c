@@ -5,7 +5,7 @@
 #include "../helper/utils/utils.h"
 #include "../mbox/mbox.h"
 
-char *commands[] = {"os",       "help", "help <name>", "clr/cls/clear", "hist",
+char *commands[] = {"os",       "help", "help <name>", "clear",  "hist",
                     "setcolor", "ref",  "showinfo",    (char *)0};
 
 void os_greet() {
@@ -201,9 +201,9 @@ void show_help(char *command) {
   str_format("These shell commands are defined internally. Type 'help' to see "
              "this list.\n",
              OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
-  str_format("Type 'help name' to find out more about the function 'name'.\n ",
+  str_format("Type 'help name' to find out more about the function 'name'.\n",
              OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
-  str_format("A star (*) next to a name means that the command is disabled.\n ",
+  str_format("A star (*) next to a name means that the command is disabled.\n",
              OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
 
   initialize_values(values, 9);        // Initialize the values array

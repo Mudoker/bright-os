@@ -17,21 +17,6 @@ void uart_init() {
     r &= ~((7 << 18) | (7 << 21)); // clear bits 21-18 (FSEL17, FSEL16)
     r |= (7 << 18) | (7 << 21);    // Set value 0b111 (select ALT3)
     GPFSEL1 = r;
-
-    // Enable pull-up on GPIO 16, 17
-    GPPUD = 0; // No pull up/down control
-    r = 150;
-    while (r--) {
-      __asm volatile("nop");
-    } // waiting 150 cycles
-
-    GPPUDCLK0 = (1 << 16) | (1 << 17); // enable clock for GPIO 16, 17
-    r = 150;
-    while (r--) {
-      __asm volatile("nop");
-    } // waiting 150 cycles
-
-    GPPUDCLK0 = 0; // flush GPIO setup
   } else {
     r = GPFSEL1;
     r &= ~((7 << 18) | (7 << 21)); // clear bits 23-18 (FSEL17, FSEL16)

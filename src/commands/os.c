@@ -460,8 +460,42 @@ void parse_command(char *input) {
     os_greet();
   } else if (is_equal(command, "clr") || is_equal(command, "cls") ||
              is_equal(command, "clear")) {
-    // Clear the terminal
-    uart_puts("\033[2J \033[1;1H");
+
+    // Parse the flags
+    char *flags[MAX_CMD_SIZE];
+
+    for (int i = 0; i < MAX_CMD_SIZE; i++) {
+      flags[i] = (char *)0;
+    }
+
+    // Define the minimum and maximum flags required for the setcolor command
+    int MIN_FLAGS = 0;
+    int MAX_FLAGS = 1;
+
+    // Parse the flags
+    parse_flags(&input[i], flags, MAX_FLAGS, MIN_FLAGS);
+
+    if (flags == (char **)0) {
+      // Clear the terminal
+      uart_puts("\033[2J \033[1;1H");
+      return;
+    }
+
+    if (flags[0] == (char *)0) {
+      // clear the terminal
+      uart_puts("\033[2J \033[1;1H");
+      return;
+    }
+
+    if (is_equal(flags[0], "f")) {
+      // Clear everything from the terminal
+      uart_puts("\033c");
+      return;
+    }
+
+    // error message
+    str_format("\nInvalid flag. Type 'help clear' to see available flags.",
+               OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
   } else if (is_equal(command, "hist")) {
     // Show command history
     uart_puts("\n");

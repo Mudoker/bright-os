@@ -333,14 +333,14 @@ int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
   // Check if the number of flags exceeds the maximum allowed flags
   if (flag_count > max_flags) {
     str_format(
-        "\nToo many flags. Type 'help <command>' to see available flags.",
+        "\n\nToo many flags. Type 'help <command>' to see available flags.\n",
         OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
     return 0;
   }
 
   // Check if the number of flags is less than the minimum required flags
   if (flag_count < min_flags) {
-    str_format("\nToo few flags. Type 'help <command>' to see available flags.",
+    str_format("\n\nToo few flags. Type 'help <command>' to see available flags.\n",
                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
     return 0;
   }
@@ -741,6 +741,9 @@ void parse_command(char *input) {
           }
 
           PARITY_CONFIG = val;
+
+          str_format("\nParity set successfully.\n", OS_CONFIG.SUCCESS,
+                     OS_CONFIG.BACKGROUND_COLOR);
         } else if (is_equal(target, "handshake")) {
           if (option == (char *)0) {
             str_format("\nInvalid handshake. Handshake must be either "

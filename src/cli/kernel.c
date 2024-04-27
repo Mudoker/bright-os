@@ -135,7 +135,7 @@ void cli() {
       parse_command(cli_buffer);
 
       if (is_equal(cli_buffer, "hist")) {
-        uart_puts("\n");
+        print_in_box("Command History");
         get_all_commands(&command_stack);
       }
 

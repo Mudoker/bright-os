@@ -315,8 +315,7 @@ int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
       }
 
       flag_buffer[k][j] = '\0';  // Null-terminate the flag string
-      flags[0] = flag_buffer[0]; // Assign the flag to the flags array
-      flags[1] = flag_buffer[1]; // Assign the flag to the flags array
+      flags[k] = flag_buffer[k]; // Store the flag in the flags array
       k++;                       // Increment index for the flags array
     }
     i++;
@@ -646,6 +645,7 @@ void parse_command(char *input) {
           int_to_string(baud_rate.fbrd, fbrd);
           str_format(fbrd, OS_CONFIG.SECONDARY_COLOR,
                      OS_CONFIG.BACKGROUND_COLOR);
+
           uart_puts("\n");
 
           BAUD_RATE_CONFIG.ibrd = baud_rate.ibrd;
@@ -665,13 +665,13 @@ void parse_command(char *input) {
           }
 
           // Success message
-          str_format("\n\nData bits set successfully.\n", OS_CONFIG.SUCCESS,
+          str_format("\nData bits set successfully.\n", OS_CONFIG.SUCCESS,
                      OS_CONFIG.BACKGROUND_COLOR);
         } else if (is_equal(target, "sbits")) {
           int val = string_to_int(option);
           if (val != 1 && val != 2) {
             str_format(
-                "\n\nInvalid stop bits. Stop bits must be either 1 or 2.\n",
+                "\nInvalid stop bits. Stop bits must be either 1 or 2.\n",
                 OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
           }
@@ -679,11 +679,11 @@ void parse_command(char *input) {
           STOP_BIT_CONFIG = val;
 
           // Success message
-          str_format("\n\nStop bits set successfully.\n", OS_CONFIG.SUCCESS,
+          str_format("\nStop bits set successfully.\n", OS_CONFIG.SUCCESS,
                      OS_CONFIG.BACKGROUND_COLOR);
         } else if (is_equal(target, "par")) {
           if (option == (char *)0) {
-            str_format("\n\nInvalid parity. Parity must be either none, even "
+            str_format("\nInvalid parity. Parity must be either none, even "
                        "or odd.\n",
                        OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
@@ -691,7 +691,7 @@ void parse_command(char *input) {
 
           int val = string_to_int(option);
           if (val < 0 || val > 2) {
-            str_format("\n\nInvalid parity. Parity must be either none, even "
+            str_format("\nInvalid parity. Parity must be either none, even "
                        "or odd.\n",
                        OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
@@ -700,7 +700,7 @@ void parse_command(char *input) {
           PARITY_CONFIG = val;
         } else if (is_equal(target, "handshake")) {
           if (option == (char *)0) {
-            str_format("\n\nInvalid handshake. Handshake must be either "
+            str_format("\nInvalid handshake. Handshake must be either "
                        "CTS/RTS.\n",
                        OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
@@ -710,20 +710,20 @@ void parse_command(char *input) {
 
           if (val < 0 || val > 1) {
             str_format(
-                "\n\nInvalid handshake. Handshake must be either CTS/RTS.\n",
+                "\nInvalid handshake. Handshake must be either CTS/RTS.\n",
                 OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
             return;
           }
 
           // Success message
-          str_format("\n\nHandshake configured successfully.\n",
+          str_format("\nHandshake configured successfully.\n",
                      OS_CONFIG.SUCCESS, OS_CONFIG.BACKGROUND_COLOR);
 
           HANDSHAKE_CONFIG = string_to_int(option);
         } else {
           uart_puts("\n");
 
-          str_format("\n\nInvalid command. Type 'help ref' to see available "
+          str_format("\nInvalid command. Type 'help ref' to see available "
                      "targets.",
                      OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
           return;

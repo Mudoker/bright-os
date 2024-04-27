@@ -773,14 +773,12 @@ void parse_command(char *input) {
     char mac_address[18];
 
     if (mbox_call(ADDR(mBuf), MBOX_CH_PROP)) {
-      unsigned int num1 = 0x12005452;
-      unsigned int num2 = 0x00005734;
-
       // Convert the MAC Address to a string
-      convertToMacAddress(num1, num2, mac_address);
+      mac_address_format(mBuf[5], mBuf[6], mac_address);
 
       values[0][0] = "MAC Address";
       values[0][1] = mac_address;
+
     } else {
       str_format("Failed to query MAC Address.\n", OS_CONFIG.ERROR,
                  OS_CONFIG.BACKGROUND_COLOR);

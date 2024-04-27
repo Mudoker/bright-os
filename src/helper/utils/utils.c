@@ -1,3 +1,4 @@
+#include "utils.h"
 #include "../../global/global.h"
 #include "../../uart/uart.h"
 
@@ -49,15 +50,14 @@ int concat(char *dest, const char *src) {
   return 1; // Indicates success
 }
 
-char *copy(char *destination, const char *source) {
-  char *start = destination;
+void copy(char *destination, const char *source) {
   while (*source != '\0') {
     *destination = *source;
     destination++;
     source++;
   }
   *destination = '\0'; // Null-terminate the destination string
-  return start;
+  return;
 }
 
 // Check if the string starts with the prefix
@@ -175,8 +175,8 @@ int string_to_int(char *charArray) {
   return result;
 }
 
-void convertToMacAddress(unsigned int num1, unsigned int num2,
-                         char *mac_address) {
+void mac_address_format(unsigned int num1, unsigned int num2,
+                        char *mac_address) {
   unsigned char byte1 = (num1 >> 24) & 0xFF;
   unsigned char byte2 = (num1 >> 16) & 0xFF;
   unsigned char byte3 = (num1 >> 8) & 0xFF;

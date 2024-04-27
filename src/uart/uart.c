@@ -82,7 +82,9 @@ void uart_init() {
   UART0_FBRD = BAUD_RATE_CONFIG.fbrd;
 
   /* Set up the Line Control Register */
-
+  // Clean previous settings
+  UART0_LCRH = 0;
+  
   // Set data bits
   if (DATA_BITS_CONFIG == 5) {
     UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;

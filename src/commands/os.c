@@ -224,11 +224,20 @@ void show_help(char *command) {
   commands_desc[5][3] =
       "\nE.g.: setcolor -t red -b yellow -pri green -sec cyan";
   commands_desc[6][0] = "Show reference for a target";
-  commands_desc[6][1] =
-      "-[target]: uart, options: -baud <bits_per_second>, -dbits <5/6/7/8>, "
-      "-sbits <1/2>, -par "
-      "<none/even/odd>, -c -handshake <CTS/RTS>";
-  commands_desc[6][2] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
+  commands_desc[6][1] = "-[target]: uart";
+  commands_desc[6][2] =
+      "-baud [value]: set baud rate (Allowed values: 300,600, 1200, 2400, "
+      "4800, 9600,14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600)";
+  commands_desc[6][3] =
+      "-dbits [value]: set data bits (Allowed values: 5, 6, 7, "
+      "8)";
+  commands_desc[6][4] =
+      "-sbits [value]: set stop bits (Allowed values: 1, 2)";
+  commands_desc[6][5] =
+      "-par [value]: set parity (Allowed values: none, even, odd)";
+  commands_desc[6][6] =
+      "-handshake [value]: set handshake (Allowed values: 0: none, 1: CTS/RTS)";
+  commands_desc[6][7] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
                         "none -c -handshake 1";
   commands_desc[7][0] = "Show current device information";
   commands_desc[7][1] = "-v: show full information";

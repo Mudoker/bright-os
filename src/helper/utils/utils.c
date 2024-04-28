@@ -2,7 +2,7 @@
 #include "../../global/global.h"
 #include "../../uart/uart.h"
 
-int is_equal(char *str1, char *str2) {
+boolean is_equal(char *str1, char *str2) {
   // Compare the strings
   while (*str1 && *str2) {
     if (*str1 != *str2) {
@@ -14,10 +14,10 @@ int is_equal(char *str1, char *str2) {
 
   // Check if both strings have ended simultaneously
   if (*str1 == '\0' && *str2 == '\0') {
-    return 1;
+    return True;
   }
 
-  return 0;
+  return False;
 }
 
 int len(const char *str) {
@@ -30,10 +30,10 @@ int len(const char *str) {
   return len;
 }
 
-int concat(char *dest, const char *src) {
+boolean concat(char *dest, const char *src) {
   // Check for null pointers
   if (dest == 0 || src == 0) {
-    return 0; // Indicates failure
+    return False; // Indicates failure
   }
 
   // Get the length of the destination string
@@ -47,7 +47,7 @@ int concat(char *dest, const char *src) {
   }
   dest[dest_len + i] = '\0'; // Null-terminate the destination string
 
-  return 1; // Indicates success
+  return True; // Indicates success
 }
 
 void copy(char *destination, const char *source) {
@@ -57,24 +57,23 @@ void copy(char *destination, const char *source) {
     source++;
   }
   *destination = '\0'; // Null-terminate the destination string
-  return;
 }
 
 // Check if the string starts with the prefix
-int starts_with(char *str, char *prefix) {
+boolean starts_with(char *str, char *prefix) {
   if (str == (char *)0 || prefix == (char *)0 || len(str) < len(prefix))
     return 0;
 
   // Check if the string starts with the prefix
   while (*prefix) {
     if (*prefix != *str) {
-      return 0;
+      return False;
     }
     prefix++;
     str++;
   }
 
-  return 1;
+  return True;
 }
 
 void int_to_string(int number, char *result) {
@@ -162,7 +161,7 @@ int string_to_int(char *charArray) {
     } else {
       // Invalid character encountered
       uart_puts("Error: Invalid character in integer string\n");
-      return 0;
+      return False;
     }
 
     // Move to the next character

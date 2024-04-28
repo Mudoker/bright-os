@@ -8,12 +8,16 @@
 char *commands[] = {"os",       "help", "help <name>", "clear",  "hist",
                     "setcolor", "ref",  "showinfo",    (char *)0};
 
+char *extended_commands[] = {"help setcolor", "help ref",  "help showinfo",
+                             "help clear",    "help hist", "help os",
+                             "help help",     "ref -uart", (char *)0};
+
 void os_greet() {
   uart_puts("\n");
 
   // Print OS logo
-  str_format(OS_INF.ascii_art_logo, OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format(OS_INFO.ASCII_ART_LOGO, THEME.PRIMARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print OS Information box
@@ -21,37 +25,18 @@ void os_greet() {
   uart_puts("\n");
 
   // Format and print "ID" title
-  str_format("ID           : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.id, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("ID           : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.OS_ID, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Format and print "OS Name" title
-  str_format("OS Name      : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.name, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("OS Name      : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.OS_NAME, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Format and print "Version" title
-  str_format("Version      : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.version, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  uart_puts("\n");
-
-  // Format and print "Home URL" title
-  str_format("Home URL     : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.home_url, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  uart_puts("\n");
-
-  // Format and print "Support URL" title
-  str_format("Support URL  : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.support_url, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Version      : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.OS_VERSION, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Author Information
@@ -59,31 +44,33 @@ void os_greet() {
   uart_puts("\n");
 
   // Print author name
-  str_format("Author       : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.author.name, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Author       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.AUTHOR_NAME, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print author username
-  str_format("Username     : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.author.username, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Username     : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.AUTHOR_USERNAME, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print author SID
-  str_format("SID          : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.author.sid, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("SID          : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.AUTHOR_SID, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print author email
-  str_format("Email        : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(OS_INF.author.email, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Email        : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.AUTHOR_EMAIL, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
+
+  // Print author github
+  str_format("Github       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+
+  str_format(OS_INFO.AUTHOR_GITHUB_URL, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
+
   uart_puts("\n");
 
   // Copyright
@@ -91,43 +78,39 @@ void os_greet() {
   uart_puts("\n");
 
   // Print school name (RMIT SSET)
-  str_format("School       : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(ACK.school, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("School       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_SCHOOL, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print course name (Embedded Systems 3)
-  str_format("Course       : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(ACK.course, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Course       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_COURSE, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print lecturer name (Mr. Linh T.D.)
-  str_format("Lecturer     : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(ACK.lecturer, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Lecturer     : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_LECTURER, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print submitted by
-  str_format("Submitted by : ", OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
-  str_format(ACK.submitted_by, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("Submitted by : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_SUBMITTED_BY, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n\n");
 
   // Print declaration
-  str_format(ACK.declaration, OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_DECLARATION, THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
   // Print OS logo
-  str_format(OS_INF.ascii_art_name, OS_CONFIG.PRIMARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format(OS_INFO.ASCII_ART_LOGO_TEXT, THEME.PRIMARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
-  str_format("@2024. All rights reserved.", OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("@2024. All rights reserved.", THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   uart_puts("\n\n");
 }
 
@@ -136,9 +119,9 @@ void os_greet() {
 // Command stack methods
 void push_command(struct CommandStack *stack, char *command) {
   // Check if the stack is full
-  if (stack->top_index == MAX_LEN_HIST - 1) {
+  if (stack->top_index == MAX_CMD_HISTORY - 1) {
     // Shift the stack to the left
-    for (int i = 0; i < MAX_LEN_HIST - 1; i++) {
+    for (int i = 0; i < MAX_CMD_HISTORY - 1; i++) {
     }
   } else {
     // Increment the top index
@@ -196,51 +179,52 @@ void show_help(char *command) {
   char *commands_desc[MAX_ROWS][MAX_ROWS];
 
   // Ref: Help command on Linuxcommand
-  str_format("\n\nBrightOS, Version 1.0\n", OS_CONFIG.SECONDARY_COLOR,
-             OS_CONFIG.BACKGROUND_COLOR);
+  str_format("\n\nBrightOS, Version 1.0\n", THEME.SECONDARY_COLOR,
+             THEME.BACKGROUND_COLOR);
   str_format("These shell commands are defined internally. Type 'help' to see "
              "this list.\n",
-             OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   str_format("Type 'help name' to find out more about the function 'name'.\n",
-             OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   str_format("A star (*) next to a name means that the command is disabled.\n",
-             OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 
   initialize_values(values, 9);        // Initialize the values array
   initialize_values(commands_desc, 9); // Initialize the commands_desc array
 
-  commands_desc[0][0] = "Show OS information";
-  commands_desc[1][0] = "Show all commands";
-  commands_desc[2][0] = "Show help for a command";
-  commands_desc[3][0] = "Clear the terminal";
-  commands_desc[4][0] = "Show command history";
+  commands_desc[0][0] = "Show OS information\n";
+  commands_desc[1][0] = "Show all commands\n";
+  commands_desc[2][0] = "Show help for a command\n";
+  commands_desc[3][0] = "Clear the terminal\n";
+  commands_desc[4][0] = "Show command history\n";
   commands_desc[5][0] = "Change color of OS";
   commands_desc[5][1] =
       "-[target]: b: background, t: text, os: os theme, "
-      "pri: primary, sec: secondary, err: error, suc: success";
+      "pri: primary, sec: secondary, err: ERROR_COLOR, suc: SUCCESS_COLOR\n";
   commands_desc[5][2] =
       "-[color]: red, green, yellow, blue, purple, cyan, white, "
       "black, bright (os only), dark (os only), light (os only)";
   commands_desc[5][3] =
       "\nE.g.: setcolor -t red -b yellow -pri green -sec cyan";
-  commands_desc[6][0] = "Show reference for a target";
+  commands_desc[6][0] = "Show reference for a target\n";
   commands_desc[6][1] = "-[target]: uart";
   commands_desc[6][2] =
       "-baud [value]: set baud rate (Allowed values: 300,600, 1200, 2400, "
-      "4800, 9600,14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600)";
+      "4800, 9600,14400, 19200, 38400, 57600, 115200, 230400, 460800, "
+      "921600)\n";
   commands_desc[6][3] =
       "-dbits [value]: set data bits (Allowed values: 5, 6, 7, "
-      "8)";
+      "8)\n";
   commands_desc[6][4] =
-      "-sbits [value]: set stop bits (Allowed values: 1, 2)";
+      "-sbits [value]: set stop bits (Allowed values: 1, 2)\n";
   commands_desc[6][5] =
-      "-par [value]: set parity (Allowed values: none, even, odd)";
-  commands_desc[6][6] =
-      "-handshake [value]: set handshake (Allowed values: 0: none, 1: CTS/RTS)";
+      "-par [value]: set parity (Allowed values: none, even, odd)\n";
+  commands_desc[6][6] = "-handshake [value]: set handshake (Allowed values: 0: "
+                        "none, 1: CTS/RTS)\n";
   commands_desc[6][7] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
                         "none -c -handshake 1";
-  commands_desc[7][0] = "Show current device information";
-  commands_desc[7][1] = "-v: show full information";
+  commands_desc[7][0] = "Show current device information\n";
+  commands_desc[7][1] = "-v: show full informationlk";
   commands_desc[7][2] = "\nE.g.: showinfo -v";
   commands_desc[8][0] = (char *)0;
 
@@ -275,8 +259,9 @@ void show_help(char *command) {
       }
     }
     if (commands[i] == (char *)0) {
-      str_format("Command not found. Type 'help' to see available commands.\n",
-                 OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+      str_format(
+          "\n\nCommand not found. Type 'help' to see available commands.\n",
+          THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
       return;
     }
   }
@@ -296,7 +281,28 @@ char *autocomplete_command(char *buffer) {
     }
   }
 
+  for (int i = 0; extended_commands[i] != (char *)0; i++) {
+    if (starts_with(extended_commands[i], buffer)) {
+      return extended_commands[i];
+    }
+  }
+
   return (char *)0;
+}
+
+// Show command execution status
+void show_status(int status, char *msg) {
+  const char *color;
+
+  if (status == 0) {
+    color = THEME.SUCCESS_COLOR;
+  } else {
+    color = THEME.ERROR_COLOR;
+  }
+
+  str_format("\n\n", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(msg, color, THEME.BACKGROUND_COLOR);
+  str_format("\n", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 }
 
 // Parse flags from the input
@@ -334,15 +340,16 @@ int parse_flags(char *input, char *flags[], int max_flags, int min_flags) {
   if (flag_count > max_flags) {
     str_format(
         "\n\nToo many flags. Type 'help <command>' to see available flags.\n",
-        OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-    return 0;
+        THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
+    return False;
   }
 
   // Check if the number of flags is less than the minimum required flags
   if (flag_count < min_flags) {
-    str_format("\n\nToo few flags. Type 'help <command>' to see available flags.\n",
-               OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-    return 0;
+    str_format(
+        "\n\nToo few flags. Type 'help <command>' to see available flags.\n",
+        THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
+    return False;
   }
   return flag_count;
 }
@@ -374,59 +381,48 @@ void parse_target(char *flag, char *target, char *option) {
 
 // Parse the color from the flags
 char *to_color(char *flag, int type) {
-  char *color_option = (char *)0;
-
   if (type == 0) {
-    if (is_equal(flag, "red")) {
-      color_option = COLOR.RED;
-    } else if (is_equal(flag, "green")) {
-      color_option = COLOR.GREEN;
-    } else if (is_equal(flag, "yellow")) {
-      color_option = COLOR.YELLOW;
-    } else if (is_equal(flag, "blue")) {
-      color_option = COLOR.BLUE;
-    } else if (is_equal(flag, "purple")) {
-      color_option = COLOR.PURPLE;
-    } else if (is_equal(flag, "cyan")) {
-      color_option = COLOR.CYAN;
-    } else if (is_equal(flag, "white")) {
-      color_option = COLOR.WHITE;
-    } else if (is_equal(flag, "black")) {
-      color_option = COLOR.BLACK;
-    } else {
-      str_format(
-          "\nInvalid color. Type 'help setcolor' to see available colors.",
-          OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-      return (char *)0;
-    }
+    if (is_equal(flag, "red"))
+      return COLOR.RED;
+    else if (is_equal(flag, "green"))
+      return COLOR.GREEN;
+    else if (is_equal(flag, "yellow"))
+      return COLOR.YELLOW;
+    else if (is_equal(flag, "blue"))
+      return COLOR.BLUE;
+    else if (is_equal(flag, "purple"))
+      return COLOR.PURPLE;
+    else if (is_equal(flag, "cyan"))
+      return COLOR.CYAN;
+    else if (is_equal(flag, "white"))
+      return COLOR.WHITE;
+    else if (is_equal(flag, "black"))
+      return COLOR.BLACK;
   } else {
-    if (is_equal(flag, "red")) {
-      color_option = COLOR.RED_BG;
-    } else if (is_equal(flag, "green")) {
-      color_option = COLOR.GREEN_BG;
-    } else if (is_equal(flag, "yellow")) {
-      color_option = COLOR.YELLOW_BG;
-    } else if (is_equal(flag, "blue")) {
-      color_option = COLOR.BLUE_BG;
-    } else if (is_equal(flag, "purple")) {
-      color_option = COLOR.PURPLE_BG;
-    } else if (is_equal(flag, "cyan")) {
-      color_option = COLOR.CYAN_BG;
-    } else if (is_equal(flag, "white")) {
-      color_option = COLOR.WHITE_BG;
-    } else if (is_equal(flag, "black")) {
-      color_option = COLOR.BLACK_BG;
-    } else if (is_equal(flag, "reset")) {
-      color_option = COLOR.RESET;
-    } else {
-      str_format(
-          "\nInvalid color. Type 'help setcolor' to see available colors.",
-          OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
-      return (char *)0;
-    }
+    if (is_equal(flag, "red"))
+      return COLOR.RED_BG;
+    else if (is_equal(flag, "green"))
+      return COLOR.GREEN_BG;
+    else if (is_equal(flag, "yellow"))
+      return COLOR.YELLOW_BG;
+    else if (is_equal(flag, "blue"))
+      return COLOR.BLUE_BG;
+    else if (is_equal(flag, "purple"))
+      return COLOR.PURPLE_BG;
+    else if (is_equal(flag, "cyan"))
+      return COLOR.CYAN_BG;
+    else if (is_equal(flag, "white"))
+      return COLOR.WHITE_BG;
+    else if (is_equal(flag, "black"))
+      return COLOR.BLACK_BG;
+    else if (is_equal(flag, "clear"))
+      return COLOR.CLEAR;
   }
 
-  return color_option;
+  show_status(1,
+              "Invalid color. Type 'help setcolor' to see available colors.");
+
+  return (char *)0;
 }
 
 // Parse and execute command
@@ -502,9 +498,8 @@ void parse_command(char *input) {
       return;
     }
 
-    // error message
-    str_format("\nInvalid flag. Type 'help clear' to see available flags.",
-               OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+    // ERROR_COLOR message
+    show_status(1, "Invalid flag. Type 'help clear' to see available flags.");
   } else if (is_equal(command, "hist")) {
     // Show command history
     uart_puts("\n");
@@ -549,7 +544,7 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.BACKGROUND_COLOR = color_option;
+        THEME.BACKGROUND_COLOR = color_option;
 
       } else if (is_equal(target, "t")) {
         // t flag requires type and color
@@ -558,32 +553,32 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.PRIMARY_COLOR = color_option;
-        OS_CONFIG.SECONDARY_COLOR = color_option;
+        THEME.PRIMARY_COLOR = color_option;
+        THEME.SECONDARY_COLOR = color_option;
 
       } else if (is_equal(target, "os")) {
         if (is_equal(option, "bright")) {
-          OS_CONFIG.PRIMARY_COLOR = COLOR.YELLOW;
-          OS_CONFIG.SECONDARY_COLOR = COLOR.WHITE;
-          OS_CONFIG.BACKGROUND_COLOR = COLOR.RESET;
-          OS_CONFIG.SUCCESS = COLOR.GREEN;
-          OS_CONFIG.ERROR = COLOR.RED;
+          THEME.PRIMARY_COLOR = COLOR.YELLOW;
+          THEME.SECONDARY_COLOR = COLOR.WHITE;
+          THEME.BACKGROUND_COLOR = COLOR.CLEAR;
+          THEME.SUCCESS_COLOR = COLOR.GREEN;
+          THEME.ERROR_COLOR = COLOR.RED;
         } else if (is_equal(option, "dark")) {
-          OS_CONFIG.PRIMARY_COLOR = COLOR.CYAN;
-          OS_CONFIG.SECONDARY_COLOR = COLOR.WHITE;
-          OS_CONFIG.BACKGROUND_COLOR = COLOR.BLACK_BG;
-          OS_CONFIG.SUCCESS = COLOR.GREEN;
-          OS_CONFIG.ERROR = COLOR.RED;
+          THEME.PRIMARY_COLOR = COLOR.CYAN;
+          THEME.SECONDARY_COLOR = COLOR.WHITE;
+          THEME.BACKGROUND_COLOR = COLOR.BLACK_BG;
+          THEME.SUCCESS_COLOR = COLOR.GREEN;
+          THEME.ERROR_COLOR = COLOR.RED;
         } else if (is_equal(option, "light")) {
-          OS_CONFIG.PRIMARY_COLOR = COLOR.BLUE;
-          OS_CONFIG.SECONDARY_COLOR = COLOR.BLACK;
-          OS_CONFIG.BACKGROUND_COLOR = COLOR.WHITE_BG;
-          OS_CONFIG.SUCCESS = COLOR.GREEN;
-          OS_CONFIG.ERROR = COLOR.RED;
+          THEME.PRIMARY_COLOR = COLOR.BLUE;
+          THEME.SECONDARY_COLOR = COLOR.BLACK;
+          THEME.BACKGROUND_COLOR = COLOR.WHITE_BG;
+          THEME.SUCCESS_COLOR = COLOR.GREEN;
+          THEME.ERROR_COLOR = COLOR.RED;
         } else {
-          str_format(
-              "\nInvalid theme. Type 'help setcolor' to see available themes.",
-              OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+          show_status(
+              1,
+              "Invalid theme. Type 'help setcolor' to see available themes.");
           return;
         }
       } else if (is_equal(target, "pri")) {
@@ -593,7 +588,7 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.PRIMARY_COLOR = color_option;
+        THEME.PRIMARY_COLOR = color_option;
       } else if (is_equal(target, "sec")) {
         color_option = to_color(option, 0);
 
@@ -601,7 +596,7 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.SECONDARY_COLOR = color_option;
+        THEME.SECONDARY_COLOR = color_option;
       } else if (is_equal(target, "err")) {
         color_option = to_color(option, 0);
 
@@ -609,7 +604,7 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.ERROR = color_option;
+        THEME.ERROR_COLOR = color_option;
       } else if (is_equal(target, "suc")) {
         color_option = to_color(option, 0);
 
@@ -617,18 +612,17 @@ void parse_command(char *input) {
           return;
         }
 
-        OS_CONFIG.SUCCESS = color_option;
+        THEME.SUCCESS_COLOR = color_option;
       } else {
-        str_format(
-            "\nInvalid command. Type 'help setcolor' to see available targets.",
-            OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+        show_status(
+            1,
+            "Invalid command. Type 'help setcolor' to see available targets.");
         return;
       }
     }
 
-    // Success message
-    str_format("\nColor set successfully.\n", OS_CONFIG.SUCCESS,
-               OS_CONFIG.BACKGROUND_COLOR);
+    // SUCCESS_COLOR message
+    show_status(0, "Color set successfully.");
   } else if (is_equal(command, "ref")) {
     // Extract the flags
     char *flags[MAX_CMD_SIZE];
@@ -660,8 +654,8 @@ void parse_command(char *input) {
         parse_target(flags[i], target, option);
 
         if (option == (char *)0) {
-          str_format("Invalid Value. Type 'help ref' to see available targets.",
-                     OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+          show_status(
+              1, "Invalid value. Type 'help ref' to see available targets.");
           return;
         }
 
@@ -670,116 +664,96 @@ void parse_command(char *input) {
 
           uart_puts("\n");
 
-          str_format("Baud Rate Configuration\n", OS_CONFIG.PRIMARY_COLOR,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format("Baud Rate Configuration\n", THEME.PRIMARY_COLOR,
+                     THEME.BACKGROUND_COLOR);
 
-          str_format("IBRD: ", OS_CONFIG.PRIMARY_COLOR,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format("IBRD: ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
           char ibrd[MAX_CMD_SIZE];
           int_to_string(baud_rate.ibrd, ibrd);
-          str_format(ibrd, OS_CONFIG.SECONDARY_COLOR,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format(ibrd, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 
           uart_puts("\n");
 
-          str_format("FBRD: ", OS_CONFIG.PRIMARY_COLOR,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format("FBRD: ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
           char fbrd[MAX_CMD_SIZE];
           int_to_string(baud_rate.fbrd, fbrd);
-          str_format(fbrd, OS_CONFIG.SECONDARY_COLOR,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          str_format(fbrd, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 
           uart_puts("\n");
 
           BAUD_RATE_CONFIG.ibrd = baud_rate.ibrd;
           BAUD_RATE_CONFIG.fbrd = baud_rate.fbrd;
 
-          // Success message
-          str_format("\nBaud rate set successfully.\n", OS_CONFIG.SUCCESS,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          // SUCCESS_COLOR message
+          show_status(0, "Baud rate set successfully.");
         } else if (is_equal(target, "dbits")) {
           DATA_BITS_CONFIG = string_to_int(option);
 
           if (DATA_BITS_CONFIG < 5 || DATA_BITS_CONFIG > 8) {
-            str_format(
-                "\n\nInvalid data bits. Data bits must be between 5 and 8.\n",
-                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(
+                1, "Invalid data bits. Data bits must be between 5 and 8.");
             return;
           }
 
-          // Success message
-          str_format("\nData bits set successfully.\n", OS_CONFIG.SUCCESS,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          // SUCCESS_COLOR message
+          show_status(0, "Data bits set successfully.");
         } else if (is_equal(target, "sbits")) {
           int val = string_to_int(option);
           if (val != 1 && val != 2) {
-            str_format(
-                "\nInvalid stop bits. Stop bits must be either 1 or 2.\n",
-                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(1,
+                        "Invalid stop bits. Stop bits must be either 1 or 2.");
             return;
           }
 
           STOP_BIT_CONFIG = val;
 
-          // Success message
-          str_format("\nStop bits set successfully.\n", OS_CONFIG.SUCCESS,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          // SUCCESS_COLOR message
+          show_status(0, "Stop bits set successfully.");
         } else if (is_equal(target, "par")) {
           if (option == (char *)0) {
-            str_format("\nInvalid parity. Parity must be either none, even "
-                       "or odd.\n",
-                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(
+                1, "Invalid parity. Parity must be either none, even or odd.");
             return;
           }
 
           int val = string_to_int(option);
           if (val < 0 || val > 2) {
-            str_format("\nInvalid parity. Parity must be either none, even "
-                       "or odd.\n",
-                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(1, "Invalid parity. Parity must be either none (0), "
+                           "odd (1) or even (2).");
             return;
           }
 
           PARITY_CONFIG = val;
-
-          str_format("\nParity set successfully.\n", OS_CONFIG.SUCCESS,
-                     OS_CONFIG.BACKGROUND_COLOR);
+          show_status(0, "Parity set successfully.");
         } else if (is_equal(target, "handshake")) {
           if (option == (char *)0) {
-            str_format("\nInvalid handshake. Handshake must be either "
-                       "CTS/RTS.\n",
-                       OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(1, "Invalid handshake. Handshake must be either "
+                           "CTS/RTS (1) or none (0) ");
             return;
           }
 
           int val = string_to_int(option);
 
           if (val < 0 || val > 1) {
-            str_format(
-                "\nInvalid handshake. Handshake must be either CTS/RTS.\n",
-                OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+            show_status(1, "Invalid handshake. Handshake must be either "
+                           "CTS/RTS (1) or none (0) ");
             return;
           }
 
-          // Success message
-          str_format("\nHandshake configured successfully.\n",
-                     OS_CONFIG.SUCCESS, OS_CONFIG.BACKGROUND_COLOR);
-
+          // SUCCESS_COLOR message
           HANDSHAKE_CONFIG = string_to_int(option);
+          show_status(0, "Handshake set successfully.");
         } else {
-          uart_puts("\n");
-
-          str_format("\nInvalid command. Type 'help ref' to see available "
-                     "targets.",
-                     OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+          show_status(
+              1, "Invalid command. Type 'help ref' to see available targets.");
           return;
         }
       }
       IS_REINIT_UART = 1;
     } else {
-      str_format("Invalid command. Type 'help ref' to see available "
-                 "targets.",
-                 OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+      str_format("\n\nInvalid command. Type 'help ref' to see available "
+                 "targets.\n",
+                 THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
       return;
     }
   } else if (is_equal(command, "showinfo")) {
@@ -826,8 +800,7 @@ void parse_command(char *input) {
       values[0][1] = mac_address;
 
     } else {
-      str_format("Failed to query MAC Address.\n", OS_CONFIG.ERROR,
-                 OS_CONFIG.BACKGROUND_COLOR);
+      show_status(1, "Failed to query MAC Address.");
     }
 
     // Get revision number
@@ -843,8 +816,7 @@ void parse_command(char *input) {
       values[1][0] = "Board Revision Number";
       values[1][1] = hex_to_string(mBuf[5]);
     } else {
-      str_format("Failed to query Board Revision.\n", OS_CONFIG.ERROR,
-                 OS_CONFIG.BACKGROUND_COLOR);
+      show_status(1, "Failed to query Board Revision.");
     }
 
     tabulate(keys, 2, values, 2);
@@ -893,7 +865,6 @@ void parse_command(char *input) {
       return;
     }
   } else {
-    str_format("\nCommand not found. Type 'help' to see available commands.\n",
-               OS_CONFIG.ERROR, OS_CONFIG.BACKGROUND_COLOR);
+    show_status(1, "Command not found. Type 'help' to see available commands.");
   }
 }

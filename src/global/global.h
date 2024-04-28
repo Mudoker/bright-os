@@ -1,44 +1,38 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-// Author structure
-typedef struct {
-  char *name;     // Author name
-  char *username; // Author username
-  char *email;    // Author email
-  char *sid;      // Author student id
-} Author;
+// Contents: global variables and structures
+#define MAX_CMD_SIZE 200    // Maximum command size
+#define MAX_STR_LEN 1000    // Maximum number of string length
+#define MAX_ARG_SIZE 100    // Maximum number of arguments size
+#define MAX_CMD_HISTORY 100 // Maximum number of command history
 
 // OS trademark structure
 typedef struct {
-  char *ascii_art_name; // OS ascii art name
-  char *ascii_art_logo; // OS logo
-  char *name;           // OS name
-  char *id;             // OS id
-  char *home_url;       // OS home url (tba)
-  char *support_url;    // OS support url (tba)
-  char *version;        // OS version
-  char *created_at;     // OS created date
-  char *updated_at;     // OS updated date
-  char *init;    // OS init (Initial text displayed in the console of the OS)
-  Author author; // OS author
-} OsTrademark;
+  // OS information
+  const char *ASCII_ART_LOGO;      // OS logo
+  const char *ASCII_ART_LOGO_TEXT; // OS logo small
+  const char *OS_NAME;             // OS name
+  const char *OS_ID;               // OS id
+  const char *OS_VERSION;          // OS version
+  const char *CREATED_AT;          // OS created date
+  const char *UPDATED_AT;          // OS updated date
+  const char *PROMPT;              // Prompt symbol (Default: BrightOS>)
 
-// Command structure
-typedef struct {
-  char *name;         // Name of the command
-  char *desc;         // Description of the command
-  void (*func)(void); // Function pointer to the command
-} Command;
+  // Author
+  const char *AUTHOR_NAME;       // Author name
+  const char *AUTHOR_USERNAME;   // Author username
+  const char *AUTHOR_EMAIL;      // Author email
+  const char *AUTHOR_SID;        // Author student id
+  const char *AUTHOR_GITHUB_URL; // Author github
 
-// Acknowledgement structure
-typedef struct {
-  char *school;       // School name
-  char *course;       // Course name
-  char *lecturer;     // Lecturer name
-  char *submitted_by; // Submitted by
-  char *declaration;  // Declaration
-} Acknowledgement;
+  // Acknowledgement
+  const char *ACK_SCHOOL;       // School name
+  const char *ACK_COURSE;       // Course name
+  const char *ACK_LECTURER;     // Lecturer name
+  const char *ACK_SUBMITTED_BY; // Submitted by
+  const char *ACK_DECLARATION;  // Declaration
+} Information;
 
 // Theme color
 typedef struct {
@@ -58,49 +52,31 @@ typedef struct {
   char *CYAN_BG;   // Cyan background color
   char *WHITE_BG;  // White background color
   char *BLACK_BG;  // Black background color
-  char *RESET;     // Reset color
+  char *CLEAR;     // Clear background color
 } Color;
-
-// Styler structure
-typedef struct {
-  char *BOLD_ON;       // Bold on
-  char *ITALIC_ON;     // Italic on
-  char *UNDERLINE_ON;  // Underline on
-  char *BOLD_OFF;      // Bold off
-  char *ITALIC_OFF;    // Italic off
-  char *UNDERLINE_OFF; // Underline off
-  char *DEFAULT;       // Default style (Bold off)
-} Styler;
 
 typedef struct {
   char *PRIMARY_COLOR;    // Primary color (Default: Yellow)
   char *SECONDARY_COLOR;  // Secondary color (Default: White)
   char *BACKGROUND_COLOR; // Background color (Default: Black)
-  char *SUCCESS;          // Success (Default: Green)
-  char *ERROR;            // Error (Default: Red)
-  char *THEME;            // Theme (Default: None)
-} OsConfig;
+  char *SUCCESS_COLOR;    // Success (Default: Green)
+  char *ERROR_COLOR;      // Error (Default: Red)
+} Theme;
 
 typedef struct {
-  unsigned int ibrd;
-  unsigned int fbrd;
+  unsigned int ibrd; // Integer baud rate divisor
+  unsigned int fbrd; // Fractional baud rate divisor
 } BaudRateConfig;
 
-// Configuration settings
-#define MAX_CMD_SIZE 100 // Maximum command size
-#define MAX_STR_LEN 1000 // Maximum number of string length
-
-// Global variables
-extern Color COLOR;
-extern OsTrademark OS_INF;
-extern Acknowledgement ACK;
-extern Styler STYLER;
-extern OsConfig OS_CONFIG;
-extern BaudRateConfig BAUD_RATE_CONFIG;
-extern int DATA_BITS_CONFIG;
-extern int IS_REINIT_UART;
-extern int STOP_BIT_CONFIG;
-extern int PARITY_CONFIG;
-extern int HANDSHAKE_CONFIG;
+// Global variables and structures
+extern Color COLOR;                     // Color options
+extern Information OS_INFO;             // OS trademark information
+extern Theme THEME;                     // Theme configuration
+extern BaudRateConfig BAUD_RATE_CONFIG; // Baud rate configuration
+extern int DATA_BITS_CONFIG;            // Data bits configuration
+extern int STOP_BIT_CONFIG;             // Stop bit configuration
+extern int PARITY_CONFIG;               // Parity configuration
+extern int HANDSHAKE_CONFIG;            // Handshake configuration
+extern int IS_REINIT_UART;              // UART reinitialization state
 
 #endif

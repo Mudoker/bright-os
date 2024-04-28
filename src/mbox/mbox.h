@@ -1,5 +1,3 @@
-// -----------------------------------mbox.h//
-// -------------------------------------
 #include "../global/global.h"
 
 /* a properly aligned buffer */

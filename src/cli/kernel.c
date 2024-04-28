@@ -5,7 +5,7 @@ void clear_current_command() {
   uart_puts("\033[2K\r");
 
   // Show prompt
-  str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("BrightOS> ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
 }
 
 void cli() {
@@ -27,11 +27,11 @@ void cli() {
       // Wait until the TX FIFO is empty
     }
 
-    str_format("BrightOS> ", OS_CONFIG.PRIMARY_COLOR,
-               OS_CONFIG.BACKGROUND_COLOR);
+    str_format("BrightOS> ", THEME.PRIMARY_COLOR,
+               THEME.BACKGROUND_COLOR);
 
     if (is_config_uart) {
-      str_format(" ", OS_CONFIG.SUCCESS, OS_CONFIG.BACKGROUND_COLOR);
+      str_format(" ", THEME.SUCCESS_COLOR, THEME.BACKGROUND_COLOR);
 
       is_config_uart = 0;
     }
@@ -87,8 +87,8 @@ void cli() {
       }
 
       index = len(cli_buffer);
-      str_format(cli_buffer, OS_CONFIG.SECONDARY_COLOR,
-                 OS_CONFIG.BACKGROUND_COLOR); // Print the command
+      str_format(cli_buffer, THEME.SECONDARY_COLOR,
+                 THEME.BACKGROUND_COLOR); // Print the command
 
     } else if (c == '+' && history_index <= command_stack.top_index) {
       was_down = 1;
@@ -106,8 +106,8 @@ void cli() {
 
       index = len(cli_buffer);
 
-      str_format(cli_buffer, OS_CONFIG.SECONDARY_COLOR,
-                 OS_CONFIG.BACKGROUND_COLOR); // Print the command
+      str_format(cli_buffer, THEME.SECONDARY_COLOR,
+                 THEME.BACKGROUND_COLOR); // Print the command
     }
   } else {
     // Get the command until newline
@@ -119,10 +119,10 @@ void cli() {
 
         // Convert character to string and print
         char str[2] = {c, '\0'};
-        str_format(str, OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+        str_format(str, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
       } else {
-        str_format("Command too long\n", OS_CONFIG.ERROR,
-                   OS_CONFIG.BACKGROUND_COLOR);
+        str_format("Command too long\n", THEME.ERROR_COLOR,
+                   THEME.BACKGROUND_COLOR);
         index = 0;
         is_new_command = 1;
       }
@@ -156,7 +156,7 @@ int main() {
 
   // OS loop
   while (1) {
-    uart_puts(OS_CONFIG.BACKGROUND_COLOR);
+    uart_puts(THEME.BACKGROUND_COLOR);
     cli();
   }
 

@@ -4,7 +4,8 @@
 #include "../utils/utils.h"
 
 // Function to format string with color and print it
-void str_format(char *str, const char *color_code, const char *bg_color_code) {
+void str_format(const char *str, const char *color_code,
+                const char *bg_color_code) {
   if (str == (char *)0 || color_code == (char *)0 ||
       bg_color_code == (char *)0) {
     return; // Invalid input
@@ -26,23 +27,23 @@ void str_format(char *str, const char *color_code, const char *bg_color_code) {
 void print_in_box(char *str) {
   // Print the formatted string in a box
   uart_puts("\n");
-  str_format("+", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   for (int i = 0; i < len(str) + 2; i++) {
-    str_format("-", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+    str_format("-", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   }
-  str_format("+", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
-  str_format("| ", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
-  str_format(str, OS_CONFIG.PRIMARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
-  str_format(" |", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("| ", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(str, THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format(" |", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 
-  str_format("+", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   for (int i = 0; i < len(str) + 2; i++) {
-    str_format("-", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+    str_format("-", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   }
-  str_format("+", OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
   uart_puts("\n");
 }
 
@@ -61,9 +62,9 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
 
   // Print keys
   for (int i = 0; i < numKeys; i++) {
-    str_format(keys[i], OS_CONFIG.PRIMARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+    str_format(keys[i], THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
     // Adjust spacing based on the maximum length of the column
-    for (int j = 0; j < maxColLength[i] - len(keys[i]) + 4;
+    for (int j = 0; j < maxColLength[i] - len(keys[i]) + 12;
          j++) { // Added 4 spaces for padding
       uart_puts(" ");
     }
@@ -92,11 +93,10 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
     }
     // Print values for current row
     for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
-      str_format(values[i][j], OS_CONFIG.SECONDARY_COLOR,
-                 OS_CONFIG.BACKGROUND_COLOR);
+      str_format(values[i][j], THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 
       // Adjust spacing based on the maximum length of the column
-      for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 4;
+      for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 12;
            k++) { // Added 4 spaces for padding
         uart_puts(" ");
       }

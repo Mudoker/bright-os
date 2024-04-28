@@ -1,9 +1,7 @@
 #include "./uart.h"
 #include "../helper/styler/styler.h"
 
-/**
- * Set baud rate and characteristics (115200 8N1) and map to GPIO
- */
+// Initialize UART 0 with default configurations
 void uart_init() {
   unsigned int r;
 
@@ -103,9 +101,7 @@ void uart_init() {
   }
 }
 
-/**
- * Send a character
- */
+// Send a character
 void uart_sendc(char c) {
   /* Check Flags Register */
   /* And wait until transmitter is not full */
@@ -117,9 +113,7 @@ void uart_sendc(char c) {
   UART0_DR = c;
 }
 
-/**
- * Receive a character
- */
+// Receive a character
 char uart_getc() {
   char c = 0;
 
@@ -135,9 +129,7 @@ char uart_getc() {
   return (c == '\r' ? '\n' : c);
 }
 
-/**
- * Display a string
- */
+// Display a string
 void uart_puts(char *s) {
   while (*s) {
     /* convert newline to carriage return + newline */
@@ -149,30 +141,36 @@ void uart_puts(char *s) {
 
 // Calculate baud rate
 BaudRateConfig get_baud_rate(int baud_rate) {
-  int valid_baud[] = {300,   600,   1200,  2400,   4800,   9600,   14400,
-                      19200, 38400, 57600, 921600, 230400, 460800, 115200};
+  // Define valid baud rates
+  const int VALID_BAUD[] = {
+      300,   600,   1200,  2400,   4800,   9600,   14400,
+      19200, 38400, 57600, 921600, 230400, 460800, 115200,
+  };
 
   BaudRateConfig config;
 
+  // Validate baud rate
   for (int i = 0; i <= 13; i++) {
-    if (baud_rate == valid_baud[i]) {
+    if (baud_rate == VALID_BAUD[i]) {
       uart_puts("\n\nBaud rate set to ");
       uart_dec(baud_rate);
       uart_puts("\n");
       break;
     }
 
+    // Give warning if baud rate is invalid
     if (i == 13) {
       // Return default baud rate
-      str_format("\n\nInvalid baud rate \n", OS_CONFIG.ERROR,
-                 OS_CONFIG.BACKGROUND_COLOR);
+      str_format("\n\nInvalid baud rate \n", THEME.ERROR_COLOR,
+                 THEME.BACKGROUND_COLOR);
 
       str_format("Supported values: 300, 1200, 2400, 4800, 9600, "
                  "19200, 38400, 57600, 115200, 230400, 460800, 921600\n\n",
-                 OS_CONFIG.SECONDARY_COLOR, OS_CONFIG.BACKGROUND_COLOR);
+                 THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
 
-      str_format("Reverting... \n", OS_CONFIG.ERROR,
-                 OS_CONFIG.BACKGROUND_COLOR);
+      str_format("Reverting... \n", THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
+
+      // Set default baud rate
       config = BAUD_RATE_CONFIG;
       return config;
     }
@@ -194,9 +192,7 @@ BaudRateConfig get_baud_rate(int baud_rate) {
   return config;
 }
 
-/**
- * Display a value in hexadecimal format
- */
+// Display a value in hexadecimal format
 void uart_hex(unsigned int num) {
   uart_puts("0x");
   for (int pos = 28; pos >= 0; pos = pos - 4) {
@@ -209,9 +205,7 @@ void uart_hex(unsigned int num) {
   }
 }
 
-/**
- * Display a value in decimal format
- */
+// Display a value in decimal format
 void uart_dec(int num) {
   // A string to store the digit characters
   char str[33] = "";
@@ -222,12 +216,14 @@ void uart_dec(int num) {
     len++;
     temp = temp / 10;
   }
+
   // Store into the string and print out
   for (int i = 0; i < len; i++) {
     int digit = num % 10; // get last digit
     num = num / 10;       // remove last digit from the number
     str[len - (i + 1)] = digit + '0';
   }
+
   str[len] = '\0';
   uart_puts(str);
 }

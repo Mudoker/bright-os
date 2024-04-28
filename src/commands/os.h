@@ -2,13 +2,11 @@
 #define OS_COMMAND
 
 #include "../global/global.h"
-#include "../uart/uart.h"
-
-#define MAX_LEN_HIST 2000
+#include "../global/struct.h"
 
 // Struct to store command stack
 typedef struct CommandStack {
-  char command[MAX_LEN_HIST][MAX_CMD_SIZE];
+  char command[MAX_CMD_HISTORY][MAX_CMD_SIZE];
   int top_index;
 } CommandStack;
 
@@ -18,10 +16,12 @@ void show_help(char *command);     // Show help menu
 void parse_command(char *command); // Parse the command
 
 // Command stack methods
-void push_command(struct CommandStack *stack, char *command);
-void pop_command(struct CommandStack *stack);
-void get_command(struct CommandStack *stack);
-void get_all_commands(struct CommandStack *stack);
-char *autocomplete_command(char *buffer);
+void push_command(struct CommandStack *stack, char *command); // Push command
+void pop_command(struct CommandStack *stack);                 // Pop command
+void get_command(struct CommandStack *stack);                 // Get command
+void get_all_commands(struct CommandStack *stack); // Get all commands
+
+// Command methods
+char *autocomplete_command(char *buffer); // Autocomplete command
 
 #endif

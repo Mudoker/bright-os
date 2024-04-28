@@ -15,7 +15,7 @@ void cli() {
   static CommandStack command_stack = {.top_index = -1};
   static int history_index = -1;
   static int was_down = 0;
-  int is_config_uart = 0;
+  static int is_config_uart = 0;
 
   // Show prompt only if new command
   if (is_new_command) {
@@ -27,28 +27,26 @@ void cli() {
       // Wait until the TX FIFO is empty
     }
 
-    str_format("BrightOS> ", THEME.PRIMARY_COLOR,
-               THEME.BACKGROUND_COLOR);
-
-    if (is_config_uart) {
-      str_format(" ", THEME.SUCCESS_COLOR, THEME.BACKGROUND_COLOR);
-
-      is_config_uart = 0;
-    }
+    str_format("BrightOS> ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
 
     is_new_command = 0;
     history_index = -1;
   }
 
   if (IS_REINIT_UART) {
+    str_format(" ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+
     while (!(UART0_FR & UART0_FR_TXFE)) {
       // Wait until the TX FIFO is empty
+    }
+
+    if (is_config_uart) {
+      is_config_uart = 0;
     }
 
     // Reinitialize UART
     uart_init();
     IS_REINIT_UART = 0;
-    is_config_uart = 1;
   }
 
   // Get command from user

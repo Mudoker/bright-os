@@ -64,6 +64,7 @@ void os_greet() {
   str_format("Email        : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
   str_format(OS_INFO.AUTHOR_EMAIL, THEME.SECONDARY_COLOR,
              THEME.BACKGROUND_COLOR);
+  uart_puts("\n");
 
   // Print author github
   str_format("Github       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);

@@ -3,7 +3,7 @@
 #include "../../uart/uart.h"
 
 boolean is_equal(char *str1, char *str2) {
-  // Compare the strings
+  // Loop through the strings and compare each character
   while (*str1 && *str2) {
     if (*str1 != *str2) {
       return 0;

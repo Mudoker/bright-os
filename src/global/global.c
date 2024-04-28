@@ -2,7 +2,6 @@
 
 // OS trademark structure
 Information OS_INFO = {
-    // OS information
     .ASCII_ART_LOGO_TEXT =
         "  ______ _______ ___   _     ______   ______  _____  "
         "______ _     _ _______\n"

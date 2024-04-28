@@ -5,7 +5,15 @@
 #include "../global/struct.h"
 
 // Struct to store command stack
+/*
+ * The implementation of the CommandStack struct follows the same pattern as the
+ * Stack struct. It has a top_index variable to keep track of the top element of
+ * the stack and an array of strings to store the commands. The MAX_CMD_HISTORY
+ * macro defines the maximum number of commands that can be stored in the stack,
+ * and the MAX_CMD_SIZE macro defines the maximum size of each command.
+ */
 typedef struct CommandStack {
+
   char command[MAX_CMD_HISTORY][MAX_CMD_SIZE];
   int top_index;
 } CommandStack;

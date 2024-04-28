@@ -2,9 +2,11 @@
 #include "../../global/global.h"
 #include "../../uart/uart.h"
 
+// Compare two strings
 boolean is_equal(char *str1, char *str2) {
   // Loop through the strings and compare each character
   while (*str1 && *str2) {
+    // Check if the characters are not equal
     if (*str1 != *str2) {
       return 0;
     }
@@ -20,9 +22,12 @@ boolean is_equal(char *str1, char *str2) {
   return False;
 }
 
+// Get the length of the string
 int len(const char *str) {
   // Get the length of the string
   int len = 0;
+
+  // Loop through the string until the null terminator is reached
   while (str[len] != '\0') {
     len++;
   }
@@ -30,6 +35,7 @@ int len(const char *str) {
   return len;
 }
 
+// Concatenate two strings
 boolean concat(char *dest, const char *src) {
   // Check for null pointers
   if (dest == 0 || src == 0) {
@@ -50,6 +56,7 @@ boolean concat(char *dest, const char *src) {
   return True; // Indicates success
 }
 
+// Copy the source string to the destination string
 void copy(char *destination, const char *source) {
   while (*source != '\0') {
     *destination = *source;
@@ -76,9 +83,11 @@ boolean starts_with(char *str, char *prefix) {
   return True;
 }
 
+// Convert an integer to a string
 void int_to_string(int number, char *result) {
   result[0] = '\0'; // Initialize the string
 
+  // Declare variables
   int i = 0;
   int is_negative = 0;
 
@@ -113,15 +122,22 @@ void int_to_string(int number, char *result) {
   result[i] = '\0';
 }
 
+// Convert an integer to a hexadecimal string
 char *hex_to_string(unsigned int number) {
+  // Initialize the result buffer
   static char result[MAX_STR_LEN];
   int i = 0;
 
   // Extract hexadecimal digits from the number and store them in reverse order
   // in the result buffer
   do {
+    // Get the least significant digit
     int digit = number % 16;
+
+    // Convert digit to character and store it in the result buffer
     result[i++] = (digit < 10) ? (char)(digit + '0') : (char)(digit - 10 + 'A');
+
+    // Move to the next digit
     number /= 16;
   } while (number != 0);
 
@@ -140,9 +156,10 @@ char *hex_to_string(unsigned int number) {
   return result;
 }
 
+// Convert a string to an integer
 int string_to_int(char *charArray) {
-  int result = 0;
-  int sign = 1; // Positive by default
+  int result = 0; // Initialize the result
+  int sign = 1;   // Positive by default
 
   // Check for negative sign
   if (*charArray == '-') {
@@ -174,8 +191,10 @@ int string_to_int(char *charArray) {
   return result;
 }
 
+// Convert a string to a hexadecimal integer
 void mac_address_format(unsigned int num1, unsigned int num2,
                         char *mac_address) {
+  // Extract bytes from the integers
   unsigned char byte1 = (num1 >> 24) & 0xFF;
   unsigned char byte2 = (num1 >> 16) & 0xFF;
   unsigned char byte3 = (num1 >> 8) & 0xFF;

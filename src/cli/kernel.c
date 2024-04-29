@@ -39,8 +39,8 @@ void cli() {
       /*
       I observed that the UART configuration is not working properly if there is
       no newline character after the uart initialization. To fix this, I added a
-      newline character after the UART initialization. This is a temporary fix
-      and I will look into it later.
+      newline character after the UART initialization. Although unexpected
+      behavior might be seen on QEMU, it works fine on real hardware.
       */
       str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
       str_format(" ", THEME.PRIMARY_COLOR);  // Print a space

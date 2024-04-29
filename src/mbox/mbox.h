@@ -1,3 +1,6 @@
+// --------------------------------------MBOX-------------------------------------
+
+// This file contains the definitions for the Mailbox functions and the Mailbox
 #include "../global/global.h"
 #include "../uart/uart.h"
 

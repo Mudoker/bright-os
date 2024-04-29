@@ -1,3 +1,6 @@
+// --------------------------------------STYLER-------------------------------------
+
+// Header file for the styler module
 #ifndef STYLER_H
 #define STYLER_H
 

@@ -14,7 +14,6 @@ void cli() {
   static char cli_buffer[MAX_CMD_SIZE] = {0}; // Buffer to store the command
   static int index = 0;          // Index to keep track of the buffer
   static int is_new_command = 1; // Flag to check if a new command is entered
-  static CommandStack command_stack = {.top_index = -1}; // History stack
   static int history_index = -1; // Index to keep track of command history
   static int was_down = 0; // Check if the current move up after a move down
 
@@ -161,15 +160,8 @@ void cli() {
       push_command(&command_stack, cli_buffer);
 
       // Parse the command from the buffer and execute
+      uart_puts("\n");
       parse_command(cli_buffer);
-
-      // Handle special commands: Show history of previous commands
-      if (is_equal(cli_buffer, "hist")) {
-        print_in_box("Command History");
-        get_all_commands(&command_stack);
-      }
-
-      // Reset the buffer
       uart_puts("\n");
 
       // Reset the flag and index
@@ -180,19 +172,12 @@ void cli() {
 }
 
 int main() {
-  // set up serial console
-  uart_init();
+  uart_init(); // Initialize UART
+  os_greet();  // Show welcome message
 
-  // Welcome message
-  os_greet();
-
-  // OS loop
   while (1) {
-    // Embed the background color
-    uart_puts(THEME.BACKGROUND_COLOR);
-
-    // Start the CLI
-    cli();
+    uart_puts(THEME.BACKGROUND_COLOR); // Set background color
+    cli();                             // Get command from user
   }
 
   return 0;

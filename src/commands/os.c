@@ -1,5 +1,8 @@
 #include "os.h"
 
+// Initialize the command stack
+CommandStack command_stack = {.top_index = -1};
+
 // List of available commands
 char *commands[] = {
     "os", "help", "clear", "history", "setcolor", "ref", "showinfo", (char *)0,
@@ -13,7 +16,7 @@ most common combinations between flags and commands
 char *extended_commands[] = {
     "help setcolor",    "help ref",
     "help showinfo",    "help clear",
-    "help hist",        "help os",
+    "help history",     "help os",
     "help help",        "ref -uart",
     "showinfo -v",      "ref -uart -baud",
     "ref -uart -dbits", "ref -uart -sbits",
@@ -193,7 +196,7 @@ void show_status(int status, char *msg) {
   }
 
   // Print the status message
-  str_format("\n\n", THEME.SECONDARY_COLOR);
+  str_format("\n", THEME.SECONDARY_COLOR);
   str_format(msg, color);
   str_format("\n", THEME.SECONDARY_COLOR);
 }
@@ -565,9 +568,10 @@ void parse_command(char *input) {
 
     // ERROR_COLOR message
     show_status(1, "Invalid flag. Type 'help clear' to see available flags.");
-  } else if (is_equal(command, "hist") || is_equal(command, "history")) {
+  } else if (is_equal(command, "history") || is_equal(command, "hist")) {
     // Show command history
-    uart_puts("\n");
+    print_in_box("Command History");
+    get_all_commands(&command_stack);
   } else if (is_equal(command, "setcolor")) {
     // Extract the flags
     char *flags[MAX_CMD_SIZE];

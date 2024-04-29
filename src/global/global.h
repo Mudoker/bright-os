@@ -1,3 +1,6 @@
+// --------------------------------------GLOBAL_H-------------------------------------
+
+// Header file for the global module
 #ifndef GLOBAL_H
 #define GLOBAL_H
 

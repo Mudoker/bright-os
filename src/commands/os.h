@@ -1,3 +1,6 @@
+// --------------------------------------OS_COMMAND-------------------------------------
+
+// Header file for the OS command module
 #ifndef OS_COMMAND
 #define OS_COMMAND
 
@@ -16,7 +19,6 @@
  * and the MAX_CMD_SIZE macro defines the maximum size of each command.
  */
 typedef struct CommandStack {
-
   char command[MAX_CMD_HISTORY][MAX_CMD_SIZE];
   int top_index;
 } CommandStack;
@@ -34,5 +36,8 @@ void get_all_commands(struct CommandStack *stack); // Get all commands
 
 // Command methods
 char *autocomplete_command(char *buffer); // Autocomplete command
+
+// Command stack
+extern CommandStack command_stack;
 
 #endif

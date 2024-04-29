@@ -1,3 +1,6 @@
+// --------------------------------------UART-------------------------------------
+
+// This file contains the definitions for the UART functions and the UART
 #ifndef UART_H
 #define UART_H
 

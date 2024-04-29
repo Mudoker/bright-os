@@ -5,7 +5,6 @@ CC = aarch64-none-elf-gcc
 LD = aarch64-none-elf-ld
 OBJCOPY = aarch64-none-elf-objcopy
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
-LDFLAGS = -nostdlib
 
 # Directories
 CLI_DIR = ./src/cli
@@ -36,32 +35,32 @@ LDFLAGS = -nostdlib
 all: clean kernel8.img run
 
 $(BUILD_DIR)/%.o: $(CLI_DIR)/%.S
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(CLI_DIR)/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(UART_DIR)/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(GLOBAL_DIR)/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(HELPER_DIR)/styler/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(HELPER_DIR)/utils/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(COMMANDS_DIR)/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/%.o: $(MBOX_DIR)/%.c
-	aarch64-none-elf-gcc $(GCCFLAGS) -c $^ -o $@
+	$(CC) $(GCCFLAGS) -c $^ -o $@
 
 kernel8.img: $(OFILES)
 	@echo BUILDING PROJECTS...
-	$(LD) $(LDFLAGS) $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel8.elf
+	$(LD) -nostdlib $^ -T $(CLI_DIR)/link.ld -o $(BUILD_DIR)/kernel8.elf
 	$(OBJCOPY) -O binary $(BUILD_DIR)/kernel8.elf $@
 
 clean:

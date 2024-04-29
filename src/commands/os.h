@@ -2,7 +2,10 @@
 #define OS_COMMAND
 
 #include "../global/global.h"
-#include "../global/struct.h"
+#include "../helper/styler/styler.h"
+#include "../helper/utils/utils.h"
+#include "../mbox/mbox.h"
+#include "../uart/uart.h"
 
 // Struct to store command stack
 /*

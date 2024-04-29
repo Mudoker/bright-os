@@ -101,27 +101,6 @@ Information OS_INFO = {
         "expectations of the Assessment declaration.",
 };
 
-// Color configuration
-Color COLOR = {
-    .RED = "\033[0;31m",
-    .GREEN = "\033[0;32m",
-    .YELLOW = "\033[0;33m",
-    .BLUE = "\033[0;34m",
-    .PURPLE = "\033[0;35m",
-    .CYAN = "\033[0;36m",
-    .WHITE = "\033[0m",
-    .BLACK = "\033[0;30m",
-    .RED_BG = "\033[41m",
-    .GREEN_BG = "\033[42m",
-    .YELLOW_BG = "\033[43m",
-    .BLUE_BG = "\033[44m",
-    .PURPLE_BG = "\033[45m",
-    .CYAN_BG = "\033[46m",
-    .WHITE_BG = "\033[47m",
-    .BLACK_BG = "\033[40m",
-    .CLEAR = "\x1b[49m",
-};
-
 // BrightOS theme configuration
 Theme THEME = {
     .PRIMARY_COLOR = "\033[0;33m",
@@ -130,16 +109,3 @@ Theme THEME = {
     .SUCCESS_COLOR = "\033[0;32m",
     .ERROR_COLOR = "\033[0;31m",
 };
-
-// 115200 baud rate configuration for UART
-BaudRateConfig BAUD_RATE_CONFIG = {
-    .ibrd = 26,
-    .fbrd = 3,
-};
-
-// State of the UART
-int IS_REINIT_UART = 0;   // 0: Not reinit, 1: Reinit
-int DATA_BITS_CONFIG = 8; // Data bits configuration (Default: 8 bits)
-int STOP_BIT_CONFIG = 1;  // Stop bit configuration (Default: 1 bit)
-int PARITY_CONFIG = 0;    // Parity configuration (Default: None)
-int HANDSHAKE_CONFIG = 0; // Handshake configuration (Default: None)

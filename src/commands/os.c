@@ -1,14 +1,8 @@
 #include "os.h"
-#include "../cli/kernel.h"
-#include "../global/global.h"
-#include "../helper/styler/styler.h"
-#include "../helper/utils/utils.h"
-#include "../mbox/mbox.h"
 
 // List of available commands
 char *commands[] = {
-    "os",       "help", "help <name>", "clear",   "hist",
-    "setcolor", "ref",  "showinfo",    (char *)0,
+    "os", "help", "clear", "history", "setcolor", "ref", "showinfo", (char *)0,
 };
 
 /*
@@ -17,8 +11,14 @@ Due to the limitations of the bare-metal environment, these only includes the
 most common combinations between flags and commands
 */
 char *extended_commands[] = {
-    "help setcolor", "help ref",  "help showinfo", "help clear", "help hist",
-    "help os",       "help help", "ref -uart",     (char *)0,
+    "help setcolor",    "help ref",
+    "help showinfo",    "help clear",
+    "help hist",        "help os",
+    "help help",        "ref -uart",
+    "showinfo -v",      "ref -uart -baud",
+    "ref -uart -dbits", "ref -uart -sbits",
+    "ref -uart -par",   "ref -uart -handshake",
+    (char *)0,
 };
 
 // Print the OS information (welcome message)
@@ -26,8 +26,7 @@ void os_greet() {
   uart_puts("\n");
 
   // OS logo
-  str_format(OS_INFO.ASCII_ART_LOGO, THEME.PRIMARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ASCII_ART_LOGO, THEME.PRIMARY_COLOR);
   uart_puts("\n");
 
   // OS Information box
@@ -35,18 +34,18 @@ void os_greet() {
   uart_puts("\n");
 
   // Format and print "ID" title
-  str_format("ID           : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.OS_ID, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("ID           : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.OS_ID, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Format and print "OS Name" title
-  str_format("OS Name      : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.OS_NAME, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("OS Name      : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.OS_NAME, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Format and print "Version" title
-  str_format("Version      : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.OS_VERSION, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("Version      : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.OS_VERSION, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Author Information
@@ -54,33 +53,29 @@ void os_greet() {
   uart_puts("\n");
 
   // Print author name
-  str_format("Author       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.AUTHOR_NAME, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("Author       : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.AUTHOR_NAME, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author username
-  str_format("Username     : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.AUTHOR_USERNAME, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("Username     : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.AUTHOR_USERNAME, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author SID
-  str_format("SID          : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.AUTHOR_SID, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("SID          : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.AUTHOR_SID, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author email
-  str_format("Email        : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.AUTHOR_EMAIL, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("Email        : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.AUTHOR_EMAIL, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print author github
-  str_format("Github       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("Github       : ", THEME.PRIMARY_COLOR);
 
-  str_format(OS_INFO.AUTHOR_GITHUB_URL, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.AUTHOR_GITHUB_URL, THEME.SECONDARY_COLOR);
 
   uart_puts("\n");
 
@@ -89,40 +84,35 @@ void os_greet() {
   uart_puts("\n");
 
   // Print school name (RMIT SSET)
-  str_format("School       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.ACK_SCHOOL, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("School       : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.ACK_SCHOOL, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print course name (Embedded Systems 3)
-  str_format("Course       : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.ACK_COURSE, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("Course       : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.ACK_COURSE, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print lecturer name (Mr. Linh T.D.)
-  str_format("Lecturer     : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.ACK_LECTURER, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("Lecturer     : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.ACK_LECTURER, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print submitted by
-  str_format("Submitted by : ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(OS_INFO.ACK_SUBMITTED_BY, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("Submitted by : ", THEME.PRIMARY_COLOR);
+  str_format(OS_INFO.ACK_SUBMITTED_BY, THEME.SECONDARY_COLOR);
   uart_puts("\n\n");
 
   // Print declaration
-  str_format(OS_INFO.ACK_DECLARATION, THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ACK_DECLARATION, THEME.SECONDARY_COLOR);
   uart_puts("\n");
 
   // Print OS logo
-  str_format(OS_INFO.ASCII_ART_LOGO_TEXT, THEME.PRIMARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format(OS_INFO.ASCII_ART_LOGO_TEXT, THEME.PRIMARY_COLOR);
   uart_puts("\n");
 
   // Print OS establishment year
-  str_format("@2024. All rights reserved.", THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("@2024. All rights reserved.", THEME.SECONDARY_COLOR);
   uart_puts("\n\n");
 }
 
@@ -203,9 +193,9 @@ void show_status(int status, char *msg) {
   }
 
   // Print the status message
-  str_format("\n\n", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(msg, color, THEME.BACKGROUND_COLOR);
-  str_format("\n", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("\n\n", THEME.SECONDARY_COLOR);
+  str_format(msg, color);
+  str_format("\n", THEME.SECONDARY_COLOR);
 }
 
 // Display help menu
@@ -215,55 +205,63 @@ void show_help(char *command) {
   char *commands_desc[MAX_ROWS][MAX_ROWS];   // Command descriptions
 
   // Ref: Help command on Linuxcommand
-  str_format("\n\nBrightOS, Version 1.0\n", THEME.SECONDARY_COLOR,
-             THEME.BACKGROUND_COLOR);
+  str_format("\n\nBrightOS, Version 1.0\n", THEME.SECONDARY_COLOR);
   str_format("These shell commands are defined internally. Type 'help' to see "
              "this list.\n",
-             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR);
   str_format("Type 'help name' to find out more about the function 'name'.\n",
-             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR);
   str_format("A star (*) next to a name means that the command is disabled.\n",
-             THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+             THEME.SECONDARY_COLOR);
 
   initialize_values(values, 9);        // Initialize the values array
   initialize_values(commands_desc, 9); // Initialize the commands_desc array
 
   // Define the descriptions for each command
-  commands_desc[0][0] = "Show OS information\n";
-  commands_desc[1][0] = "Show all commands\n";
-  commands_desc[2][0] = "Show help for a command\n";
-  commands_desc[3][0] = "Clear the terminal\n";
-  commands_desc[4][0] = "Show command history\n";
-  commands_desc[5][0] = "Change color of OS";
-  commands_desc[5][1] =
+  commands_desc[0][0] = "Show OS information";
+  commands_desc[1][0] = "Show help for a command";
+  commands_desc[1][1] = "<command>: To get help for a specific command";
+  commands_desc[1][2] = "\n** '?' can be used as an alias for 'help' command";
+  commands_desc[1][3] = "\nE.g.: help setcolor\n";
+  commands_desc[2][0] = "Clear the terminal";
+  commands_desc[2][1] = "\n-f: Full clear (clear everything)";
+  commands_desc[2][2] =
+      "\n** 'cls' and 'clr' can be used as aliases for 'clear'";
+  commands_desc[2][3] = "\nE.g.: clear -f";
+  commands_desc[3][0] = "Show command histor";
+  commands_desc[3][1] = "** 'hist' can be used as an alias for 'history'";
+  commands_desc[3][1] = "\nE.g.: hist";
+  commands_desc[4][0] = "Change color of OS";
+  commands_desc[4][1] =
       "-[target]: b: background, t: text, os: os theme, "
       "pri: primary, sec: secondary, err: ERROR_COLOR, suc: SUCCESS_COLOR\n";
-  commands_desc[5][2] =
+  commands_desc[4][2] =
       "-[color]: red, green, yellow, blue, purple, cyan, white, "
       "black, bright (os only), dark (os only), light (os only)";
-  commands_desc[5][3] =
+  commands_desc[4][3] =
       "\nE.g.: setcolor -t red -b yellow -pri green -sec cyan";
-  commands_desc[6][0] = "Show reference for a target\n";
-  commands_desc[6][1] = "-[target]: uart";
-  commands_desc[6][2] =
-      "-baud [value]: set baud rate (Allowed values: 300,600, 1200, 2400, "
+  commands_desc[5][0] = "Show reference for a target";
+  commands_desc[5][1] = "-[target]: uart";
+  commands_desc[5][2] =
+      "-baud/bdr [value]: set baud rate (Allowed values: 300,600, 1200, 2400, "
       "4800, 9600,14400, 19200, 38400, 57600, 115200, 230400, 460800, "
       "921600)\n";
-  commands_desc[6][3] =
-      "-dbits [value]: set data bits (Allowed values: 5, 6, 7, "
+  commands_desc[5][3] =
+      "-dbits/dbs [value]: set data bits (Allowed values: 5, 6, 7, "
       "8)\n";
-  commands_desc[6][4] =
-      "-sbits [value]: set stop bits (Allowed values: 1, 2)\n";
-  commands_desc[6][5] =
+  commands_desc[5][4] =
+      "-sbits/sbs [value]: set stop bits (Allowed values: 1, 2)\n";
+  commands_desc[5][5] =
       "-par [value]: set parity (Allowed values: none, even, odd)\n";
-  commands_desc[6][6] = "-handshake [value]: set handshake (Allowed values: 0: "
-                        "none, 1: CTS/RTS)\n";
-  commands_desc[6][7] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
-                        "none -c -handshake 1";
-  commands_desc[7][0] = "Show current device information\n";
-  commands_desc[7][1] = "-v: show full informationlk";
-  commands_desc[7][2] = "\nE.g.: showinfo -v";
-  commands_desc[8][0] = (char *)0;
+  commands_desc[5][6] =
+      "-handshake/hs/flow [value]: set handshake (Allowed values: 0: "
+      "none, 1: CTS/RTS)\n";
+  commands_desc[5][7] = "\nE.g.: ref -uart -baud 115200 -dbits 8 -sbits 1 -par "
+                        "none -handshake 1";
+  commands_desc[6][0] = "Show current device informatio";
+  commands_desc[6][1] = "-v: show full information";
+  commands_desc[6][2] = "\nE.g.: showinfo -v";
+  commands_desc[7][0] = (char *)0;
 
   // Display help menu
   uart_puts("\n");
@@ -333,9 +331,17 @@ char *autocomplete_command(char *buffer) {
   if (len(buffer) == 0) {
     return (char *)0;
   }
+  // Check if the buffer starts with '?' and return "help" if true
+  if (buffer[0] == '?') {
+    buffer[0] = 'h';
+    buffer[1] = 'e';
+    buffer[2] = 'l';
+    buffer[3] = 'p';
+  }
 
   // Loop through the commands to find the matching command
   for (int i = 0; commands[i] != (char *)0; i++) {
+
     if (starts_with(commands[i], buffer)) {
       return commands[i];
     }
@@ -437,45 +443,44 @@ char *to_color(char *flag, int type) {
   // If the type is 0, it is a text color, if it is 1, it is a background color
   if (type == 0) {
     if (is_equal(flag, "red"))
-      return COLOR.RED;
+      return RED;
     else if (is_equal(flag, "green"))
-      return COLOR.GREEN;
+      return GREEN;
     else if (is_equal(flag, "yellow"))
-      return COLOR.YELLOW;
+      return YELLOW;
     else if (is_equal(flag, "blue"))
-      return COLOR.BLUE;
+      return BLUE;
     else if (is_equal(flag, "purple"))
-      return COLOR.PURPLE;
+      return PURPLE;
     else if (is_equal(flag, "cyan"))
-      return COLOR.CYAN;
+      return CYAN;
     else if (is_equal(flag, "white"))
-      return COLOR.WHITE;
+      return WHITE;
     else if (is_equal(flag, "black"))
-      return COLOR.BLACK;
+      return BLACK;
   } else {
     if (is_equal(flag, "red"))
-      return COLOR.RED_BG;
+      return RED_BG;
     else if (is_equal(flag, "green"))
-      return COLOR.GREEN_BG;
+      return GREEN_BG;
     else if (is_equal(flag, "yellow"))
-      return COLOR.YELLOW_BG;
+      return YELLOW_BG;
     else if (is_equal(flag, "blue"))
-      return COLOR.BLUE_BG;
+      return BLUE_BG;
     else if (is_equal(flag, "purple"))
-      return COLOR.PURPLE_BG;
+      return PURPLE_BG;
     else if (is_equal(flag, "cyan"))
-      return COLOR.CYAN_BG;
+      return CYAN_BG;
     else if (is_equal(flag, "white"))
-      return COLOR.WHITE_BG;
+      return WHITE_BG;
     else if (is_equal(flag, "black"))
-      return COLOR.BLACK_BG;
+      return BLACK_BG;
     else if (is_equal(flag, "clear"))
-      return COLOR.CLEAR;
+      return CLEAR;
   }
 
   // ERROR_COLOR message
-  show_status(1,
-              "Invalid color. Type 'help setcolor' to see available colors.");
+  show_status(1, "Invalid  Type 'help setcolor' to see available colors.");
 
   return (char *)0;
 }
@@ -498,7 +503,7 @@ void parse_command(char *input) {
   }
 
   // Check for various commands
-  if (is_equal(command, "help")) {
+  if (is_equal(command, "help") || is_equal(command, "?")) {
     // Extract the command to get help for
     char help_command[MAX_CMD_SIZE];
     j = 0;
@@ -560,7 +565,7 @@ void parse_command(char *input) {
 
     // ERROR_COLOR message
     show_status(1, "Invalid flag. Type 'help clear' to see available flags.");
-  } else if (is_equal(command, "hist")) {
+  } else if (is_equal(command, "hist") || is_equal(command, "history")) {
     // Show command history
     uart_puts("\n");
   } else if (is_equal(command, "setcolor")) {
@@ -636,23 +641,23 @@ void parse_command(char *input) {
       } else if (is_equal(target, "os")) {
         // For the os flag, set the OS theme
         if (is_equal(option, "bright")) {
-          THEME.PRIMARY_COLOR = COLOR.YELLOW;
-          THEME.SECONDARY_COLOR = COLOR.WHITE;
-          THEME.BACKGROUND_COLOR = COLOR.CLEAR;
-          THEME.SUCCESS_COLOR = COLOR.GREEN;
-          THEME.ERROR_COLOR = COLOR.RED;
+          THEME.PRIMARY_COLOR = YELLOW;
+          THEME.SECONDARY_COLOR = WHITE;
+          THEME.BACKGROUND_COLOR = CLEAR;
+          THEME.SUCCESS_COLOR = GREEN;
+          THEME.ERROR_COLOR = RED;
         } else if (is_equal(option, "dark")) {
-          THEME.PRIMARY_COLOR = COLOR.CYAN;
-          THEME.SECONDARY_COLOR = COLOR.WHITE;
-          THEME.BACKGROUND_COLOR = COLOR.BLACK_BG;
-          THEME.SUCCESS_COLOR = COLOR.GREEN;
-          THEME.ERROR_COLOR = COLOR.RED;
+          THEME.PRIMARY_COLOR = CYAN;
+          THEME.SECONDARY_COLOR = WHITE;
+          THEME.BACKGROUND_COLOR = BLACK_BG;
+          THEME.SUCCESS_COLOR = GREEN;
+          THEME.ERROR_COLOR = RED;
         } else if (is_equal(option, "light")) {
-          THEME.PRIMARY_COLOR = COLOR.BLUE;
-          THEME.SECONDARY_COLOR = COLOR.BLACK;
-          THEME.BACKGROUND_COLOR = COLOR.WHITE_BG;
-          THEME.SUCCESS_COLOR = COLOR.GREEN;
-          THEME.ERROR_COLOR = COLOR.RED;
+          THEME.PRIMARY_COLOR = BLUE;
+          THEME.SECONDARY_COLOR = BLACK;
+          THEME.BACKGROUND_COLOR = WHITE_BG;
+          THEME.SUCCESS_COLOR = GREEN;
+          THEME.ERROR_COLOR = RED;
         } else {
           show_status(
               1,
@@ -745,26 +750,25 @@ void parse_command(char *input) {
         }
 
         // If the target is baud, set the baud rate
-        if (is_equal(target, "baud")) {
+        if (is_equal(target, "baud") || is_equal(target, "bdr")) {
           BaudRateConfig baud_rate = get_baud_rate(string_to_int(option));
 
           uart_puts("\n");
 
-          str_format("Baud Rate Configuration\n", THEME.PRIMARY_COLOR,
-                     THEME.BACKGROUND_COLOR);
+          str_format("Baud Rate Configuration\n", THEME.PRIMARY_COLOR);
 
           // Convert the baud rate to a string and display it
-          str_format("IBRD: ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+          str_format("IBRD: ", THEME.PRIMARY_COLOR);
           char ibrd[MAX_CMD_SIZE];
           int_to_string(baud_rate.ibrd, ibrd);
-          str_format(ibrd, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+          str_format(ibrd, THEME.SECONDARY_COLOR);
 
           uart_puts("\n");
 
-          str_format("FBRD: ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+          str_format("FBRD: ", THEME.PRIMARY_COLOR);
           char fbrd[MAX_CMD_SIZE];
           int_to_string(baud_rate.fbrd, fbrd);
-          str_format(fbrd, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+          str_format(fbrd, THEME.SECONDARY_COLOR);
 
           uart_puts("\n");
 
@@ -773,7 +777,7 @@ void parse_command(char *input) {
 
           // SUCCESS_COLOR message
           show_status(0, "Baud rate set successfully.");
-        } else if (is_equal(target, "dbits")) {
+        } else if (is_equal(target, "dbits") || is_equal(target, "dbs")) {
           DATA_BITS_CONFIG = string_to_int(option);
 
           // Data bits must be between 5 and 8
@@ -785,7 +789,7 @@ void parse_command(char *input) {
 
           // SUCCESS_COLOR message
           show_status(0, "Data bits set successfully.");
-        } else if (is_equal(target, "sbits")) {
+        } else if (is_equal(target, "sbits") || is_equal(target, "sbs")) {
           int val = string_to_int(option);
 
           if (val != 1 && val != 2) {
@@ -820,7 +824,8 @@ void parse_command(char *input) {
 
           // Succss message
           show_status(0, "Parity set successfully.");
-        } else if (is_equal(target, "handshake")) {
+        } else if (is_equal(target, "handshake") || is_equal(target, "hs") ||
+                   is_equal(target, "flow")) {
           // Check for the handshake option if null
           if (option == (char *)0) {
             show_status(1, "Invalid handshake. Handshake must be either "
@@ -835,7 +840,7 @@ void parse_command(char *input) {
           // allowed)
           if (val < 0 || val > 1) {
             show_status(1, "Invalid handshake. Handshake must be either "
-                           "CTS/RTS (1) or none (0) ");
+                           "CTS/RTS (1) or none (0)");
             return;
           }
 

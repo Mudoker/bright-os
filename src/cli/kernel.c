@@ -6,7 +6,7 @@ void clear_current_command() {
   uart_puts("\033[2K\r");
 
   // Show prompt
-  str_format("BrightOS> ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("BrightOS> ", THEME.PRIMARY_COLOR);
 }
 
 // CLI function to get the command from the user
@@ -16,8 +16,7 @@ void cli() {
   static int is_new_command = 1; // Flag to check if a new command is entered
   static CommandStack command_stack = {.top_index = -1}; // History stack
   static int history_index = -1; // Index to keep track of command history
-  static int was_down =
-      0; // Flag to check if the current move up was triggered after a move down
+  static int was_down = 0; // Check if the current move up after a move down
 
   // Show prompt only if new command
   if (is_new_command) {
@@ -31,7 +30,7 @@ void cli() {
       // Wait until the TX FIFO is empty
     }
 
-    str_format("BrightOS> ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+    str_format("BrightOS> ", THEME.PRIMARY_COLOR);
 
     is_new_command = 0;
     history_index = -1;
@@ -44,7 +43,7 @@ void cli() {
      * mismatch baud rate on the terminal, the user input is not captured
      * correctly. To fix this, an additional empty character is added to the
      * buffer to trigger the UART configuration. */
-    str_format(" ", THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+    str_format(" ", THEME.PRIMARY_COLOR);
 
     // Wait until the TX FIFO is empty
     while (!(UART0_FR & UART0_FR_TXFE)) {
@@ -111,8 +110,7 @@ void cli() {
 
       // Move the cursor to the end of the buffer
       index = len(cli_buffer);
-      str_format(cli_buffer, THEME.SECONDARY_COLOR,
-                 THEME.BACKGROUND_COLOR); // Print the command
+      str_format(cli_buffer, THEME.SECONDARY_COLOR); // Print the command
     } else if (c == '+' && history_index <= command_stack.top_index) {
       // Set the flag to true as this is a move down
       was_down = 1;
@@ -134,7 +132,7 @@ void cli() {
       index = len(cli_buffer);
 
       // Print the command
-      str_format(cli_buffer, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+      str_format(cli_buffer, THEME.SECONDARY_COLOR);
     }
   } else {
     // Get the command until newline
@@ -146,10 +144,9 @@ void cli() {
 
         // Convert character to string and print
         char str[2] = {c, '\0'};
-        str_format(str, THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+        str_format(str, THEME.SECONDARY_COLOR);
       } else {
-        str_format("Command too long\n", THEME.ERROR_COLOR,
-                   THEME.BACKGROUND_COLOR);
+        str_format("Command too long\n", THEME.ERROR_COLOR);
         index = 0;
         is_new_command = 1;
       }

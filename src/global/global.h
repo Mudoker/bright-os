@@ -1,11 +1,35 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-// Contents: global variables and structures
+// Terminal Guard
 #define MAX_CMD_SIZE 200    // Maximum command size
 #define MAX_STR_LEN 1000    // Maximum number of string length
 #define MAX_ARG_SIZE 100    // Maximum number of arguments size
-#define MAX_CMD_HISTORY 100 // Maximum number of command history
+#define MAX_CMD_HISTORY 200 // Maximum number of command history
+
+// Text color codes
+#define RED "\033[0;31m"
+#define GREEN "\033[0;32m"
+#define YELLOW "\033[0;33m"
+#define BLUE "\033[0;34m"
+#define PURPLE "\033[0;35m"
+#define CYAN "\033[0;36m"
+#define WHITE "\033[0;37m"
+#define BLACK "\033[0;30m"
+#define RED_BG "\033[41m"
+
+// Background color codes
+#define GREEN_BG "\033[42m"
+#define YELLOW_BG "\033[43m"
+#define BLUE_BG "\033[44m"
+#define PURPLE_BG "\033[45m"
+#define CYAN_BG "\033[46m"
+#define WHITE_BG "\033[47m"
+#define BLACK_BG "\033[40m"
+#define CLEAR "\033[0m"
+
+// User-defined data types
+typedef enum { False = 0, True = 1 } boolean; // Boolean data type
 
 // OS trademark structure
 typedef struct {
@@ -34,27 +58,6 @@ typedef struct {
   const char *ACK_DECLARATION;  // Declaration
 } Information;
 
-// Theme color
-typedef struct {
-  char *RED;       // Red color
-  char *GREEN;     // Green color
-  char *YELLOW;    // Yellow color
-  char *BLUE;      // Blue color
-  char *PURPLE;    // Purple color
-  char *CYAN;      // Cyan color
-  char *WHITE;     // White color
-  char *BLACK;     // Black color
-  char *RED_BG;    // Red background color
-  char *GREEN_BG;  // Green background color
-  char *YELLOW_BG; // Yellow background color
-  char *BLUE_BG;   // Blue background color
-  char *PURPLE_BG; // Purple background color
-  char *CYAN_BG;   // Cyan background color
-  char *WHITE_BG;  // White background color
-  char *BLACK_BG;  // Black background color
-  char *CLEAR;     // Clear background color
-} Color;
-
 typedef struct {
   char *PRIMARY_COLOR;    // Primary color (Default: Yellow)
   char *SECONDARY_COLOR;  // Secondary color (Default: White)
@@ -63,20 +66,8 @@ typedef struct {
   char *ERROR_COLOR;      // Error (Default: Red)
 } Theme;
 
-typedef struct {
-  unsigned int ibrd; // Integer baud rate divisor
-  unsigned int fbrd; // Fractional baud rate divisor
-} BaudRateConfig;
-
 // Global variables and structures
-extern Color COLOR;                     // Color options
-extern Information OS_INFO;             // OS trademark information
-extern Theme THEME;                     // Theme configuration
-extern BaudRateConfig BAUD_RATE_CONFIG; // Baud rate configuration
-extern int DATA_BITS_CONFIG;            // Data bits configuration
-extern int STOP_BIT_CONFIG;             // Stop bit configuration
-extern int PARITY_CONFIG;               // Parity configuration
-extern int HANDSHAKE_CONFIG;            // Handshake configuration
-extern int IS_REINIT_UART;              // UART reinitialization state
+extern Information OS_INFO; // OS trademark information
+extern Theme THEME;         // Theme configuration
 
 #endif

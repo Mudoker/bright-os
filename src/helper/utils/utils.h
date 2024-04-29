@@ -1,4 +1,5 @@
-#include "../../global/struct.h"
+#include "../../global/global.h"
+#include "../../uart/uart.h"
 
 // Function prototypes
 boolean is_equal(char *str1, char *str2);    // Check if two strings are equal

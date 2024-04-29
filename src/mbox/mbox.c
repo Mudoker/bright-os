@@ -1,5 +1,4 @@
 #include "./mbox.h"
-#include "../uart/uart.h"
 
 // A properly aligned buffer
 volatile unsigned int __attribute__((aligned(16))) mBuf[36];

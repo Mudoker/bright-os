@@ -1,18 +1,7 @@
 #include "./styler.h"
-#include "../../global/global.h"
-#include "../../uart/uart.h"
-#include "../utils/utils.h"
 
 // Function to format string with color and print it
-void str_format(const char *str, const char *color_code,
-                const char *bg_color_code) {
-
-  // Check if the input is valid or not (not null)
-  if (str == (char *)0 || color_code == (char *)0 ||
-      bg_color_code == (char *)0) {
-    return; // Invalid input
-  }
-
+void str_format(const char *str, const char *color_code) {
   // Initialize the formatted string
   static char formatted_str[MAX_STR_LEN];
 
@@ -20,9 +9,9 @@ void str_format(const char *str, const char *color_code,
   formatted_str[0] = '\0';
 
   // Concatenate strings
-  concat(formatted_str, color_code);    // Add color code
-  concat(formatted_str, bg_color_code); // Add background color code
-  concat(formatted_str, str);           // Add the string
+  concat(formatted_str, color_code);             // Add color code
+  concat(formatted_str, THEME.BACKGROUND_COLOR); // Add background color code
+  concat(formatted_str, str);                    // Add the string
 
   uart_puts(formatted_str); // Print the formatted string
 }
@@ -33,35 +22,35 @@ void print_in_box(char *str) {
   uart_puts("\n");
 
   // Print the box corners
-  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR);
 
   // Print dashes
   for (int i = 0; i < len(str) + 2; i++) {
-    str_format("-", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+    str_format("-", THEME.SECONDARY_COLOR);
   }
 
   // Print the box corners
-  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR);
 
   uart_puts("\n");
 
   // Print the box sides
-  str_format("| ", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(str, THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
-  str_format(" |", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("| ", THEME.SECONDARY_COLOR);
+  str_format(str, THEME.PRIMARY_COLOR);
+  str_format(" |", THEME.SECONDARY_COLOR);
 
   uart_puts("\n");
 
   // Print the box corners
-  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR);
 
   // Print dashes
   for (int i = 0; i < len(str) + 2; i++) {
-    str_format("-", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+    str_format("-", THEME.SECONDARY_COLOR);
   }
 
   // Print the box corners
-  str_format("+", THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+  str_format("+", THEME.SECONDARY_COLOR);
   uart_puts("\n");
 }
 
@@ -85,7 +74,7 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
   // Print keys
   for (int i = 0; i < numKeys; i++) {
     // Print keys for current row
-    str_format(keys[i], THEME.PRIMARY_COLOR, THEME.BACKGROUND_COLOR);
+    str_format(keys[i], THEME.PRIMARY_COLOR);
 
     // Adjust spacing based on the maximum length of the column
     for (int j = 0; j < maxColLength[i] - len(keys[i]) + 12;
@@ -119,9 +108,10 @@ void tabulate(char *keys[], int numKeys, char *values[][MAX_ROWS],
         values[i][1] = "Invalid";
       }
     }
+
     // Print values for current row
     for (int j = 0; j < numKeys && values[i][j] != (char *)0; j++) {
-      str_format(values[i][j], THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+      str_format(values[i][j], THEME.SECONDARY_COLOR);
 
       // Adjust spacing based on the maximum length of the column
       for (int k = 0; k < maxColLength[j] - len(values[i][j]) + 12;

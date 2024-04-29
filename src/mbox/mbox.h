@@ -1,9 +1,11 @@
 #include "../global/global.h"
+#include "../uart/uart.h"
 
-/* a properly aligned buffer */
+// Properly aligned buffer
 extern volatile unsigned int mBuf[36];
 #define ADDR(X) (unsigned int)((unsigned long)X)
-/* Registers */
+
+// Registers
 #define VIDEOCORE_MBOX (MMIO_BASE + 0x0000B880)
 #define MBOX0_READ (*(volatile unsigned int *)(VIDEOCORE_MBOX + 0x00))
 #define MBOX0_PEEK (*(volatile unsigned int *)(VIDEOCORE_MBOX + 0x10))
@@ -15,13 +17,16 @@ extern volatile unsigned int mBuf[36];
 #define MBOX1_SENDER (*(volatile unsigned int *)(VIDEOCORE_MBOX + 0x34))
 #define MBOX1_STATUS (*(volatile unsigned int *)(VIDEOCORE_MBOX + 0x38))
 #define MBOX1_CONFIG (*(volatile unsigned int *)(VIDEOCORE_MBOX + 0x3C))
+
 // Request/Response code in Buffer content
 #define MBOX_RESPONSE 0x80000000
 #define MBOX_REQUEST 0
+
 // Status Value (from Status Register)
 #define MBOX_FULL 0x80000000
 #define MBOX_EMPTY 0x40000000
-/* channels */
+
+// Channels
 #define MBOX_CH_POWER 0 // Power management
 #define MBOX_CH_FB 1    // Frame buffer
 #define MBOX_CH_VUART 2 // Virtual UART
@@ -30,11 +35,12 @@ extern volatile unsigned int mBuf[36];
 #define MBOX_CH_BTNS 5  // Buttons
 #define MBOX_CH_TOUCH 6 // Touch screen
 #define MBOX_CH_PROP 8  // Property tags (ARM -> VC)
-/* tags */
+
+// Tags
 #define MBOX_TAG_GETSERIAL 0x00010004 // Get board serial
 #define MBOX_TAG_GETMODEL 0x00010001  // Get board model
 #define MBOX_TAG_SETCLKRATE 0x00038002
 #define MBOX_TAG_LAST 0
 
-/* Function Prototypes */
+// Function Prototypes
 int mbox_call(unsigned int buffer_addr, unsigned char channel);

@@ -1,6 +1,4 @@
 #include "utils.h"
-#include "../../global/global.h"
-#include "../../uart/uart.h"
 
 // Compare two strings
 boolean is_equal(char *str1, char *str2) {

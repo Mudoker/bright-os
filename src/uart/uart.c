@@ -1,6 +1,19 @@
 #include "./uart.h"
 #include "../helper/styler/styler.h"
 
+// 115200 baud rate configuration for UART
+BaudRateConfig BAUD_RATE_CONFIG = {
+    .ibrd = 26,
+    .fbrd = 3,
+};
+
+// State of the UART
+int IS_REINIT_UART = 0;   // UART reinitialization state
+int DATA_BITS_CONFIG = 8; // Data bits configuration (default 8 bits)
+int STOP_BIT_CONFIG = 1;  // Stop bit configuration (default 1 bit)
+int PARITY_CONFIG = 0;    // Parity configuration (default None)
+int HANDSHAKE_CONFIG = 0; // Handshake configuration (default None)
+
 // Initialize UART 0 with default configurations
 void uart_init() {
   unsigned int r;
@@ -161,14 +174,13 @@ BaudRateConfig get_baud_rate(int baud_rate) {
     // Give warning if baud rate is invalid
     if (i == 13) {
       // Return default baud rate
-      str_format("\n\nInvalid baud rate \n", THEME.ERROR_COLOR,
-                 THEME.BACKGROUND_COLOR);
+      str_format("\n\nInvalid baud rate \n", THEME.ERROR_COLOR);
 
       str_format("Supported values: 300, 1200, 2400, 4800, 9600, "
                  "19200, 38400, 57600, 115200, 230400, 460800, 921600\n\n",
-                 THEME.SECONDARY_COLOR, THEME.BACKGROUND_COLOR);
+                 THEME.SECONDARY_COLOR);
 
-      str_format("Reverting... \n", THEME.ERROR_COLOR, THEME.BACKGROUND_COLOR);
+      str_format("Reverting... \n", THEME.ERROR_COLOR);
 
       // Set default baud rate
       config = BAUD_RATE_CONFIG;

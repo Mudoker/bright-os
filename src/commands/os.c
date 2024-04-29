@@ -778,9 +778,11 @@ void parse_command(char *input) {
 
           BAUD_RATE_CONFIG.ibrd = baud_rate.ibrd;
           BAUD_RATE_CONFIG.fbrd = baud_rate.fbrd;
+          IS_CONFIG_BAUD_RATE = 1;
 
           // SUCCESS_COLOR message
           show_status(0, "Baud rate set successfully.");
+          IS_REINIT_UART = 1;
         } else if (is_equal(target, "dbits") || is_equal(target, "dbs")) {
           DATA_BITS_CONFIG = string_to_int(option);
 
@@ -793,6 +795,7 @@ void parse_command(char *input) {
 
           // SUCCESS_COLOR message
           show_status(0, "Data bits set successfully.");
+          IS_REINIT_UART = 1;
         } else if (is_equal(target, "sbits") || is_equal(target, "sbs")) {
           int val = string_to_int(option);
 
@@ -806,6 +809,7 @@ void parse_command(char *input) {
 
           // SUCCESS_COLOR message
           show_status(0, "Stop bits set successfully.");
+          IS_REINIT_UART = 1;
         } else if (is_equal(target, "par")) {
           // Check for the parity option if null
           if (option == (char *)0) {
@@ -828,6 +832,7 @@ void parse_command(char *input) {
 
           // Succss message
           show_status(0, "Parity set successfully.");
+          IS_REINIT_UART = 1;
         } else if (is_equal(target, "handshake") || is_equal(target, "hs") ||
                    is_equal(target, "flow")) {
           // Check for the handshake option if null
@@ -851,14 +856,13 @@ void parse_command(char *input) {
           // SUCCESS_COLOR message
           HANDSHAKE_CONFIG = string_to_int(option);
           show_status(0, "Handshake set successfully.");
+          IS_REINIT_UART = 1;
         } else {
           show_status(
               1, "Invalid command. Type 'help ref' to see available targets.");
           return;
         }
       }
-
-      IS_REINIT_UART = 1;
     } else {
       show_status(1,
                   "Invalid command. Type 'help ref' to see available targets.");

@@ -123,6 +123,7 @@ extern int STOP_BIT_CONFIG;             // Stop bit configuration
 extern int PARITY_CONFIG;               // Parity configuration
 extern int HANDSHAKE_CONFIG;            // Handshake configuration
 extern int IS_REINIT_UART;              // UART reinitialization state
+extern int IS_CONFIG_BAUD_RATE; // Flag to check if the baud rate is configured
 
 // Function prototypes
 void uart_init();                            // Initialize UART

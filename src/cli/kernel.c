@@ -16,6 +16,7 @@ void cli() {
   static int is_new_command = 1; // Flag to check if a new command is entered
   static int history_index = -1; // Index to keep track of command history
   static int was_down = 0; // Check if the current move up after a move down
+  static int is_config_uart = 0; // Check if the UART needs to be reinitialized
 
   // Show prompt only if new command
   if (is_new_command) {
@@ -24,34 +25,34 @@ void cli() {
       cli_buffer[i] = '\0';
     }
 
-    // Wait until the TX FIFO is empty
-    while (!(UART0_FR & UART0_FR_TXFE)) {
-      // Wait until the TX FIFO is empty
-    }
-
     str_format("BrightOS> ", THEME.PRIMARY_COLOR);
 
-    is_new_command = 0;
-    history_index = -1;
-  }
-
-  // Check if UART configuration is needed
-  if (IS_REINIT_UART) {
-    /* The reason for this is that the UART re-configuration is triggered by the
-     * user input. When the configuration is about setting the baud rate, due to
-     * mismatch baud rate on the terminal, the user input is not captured
-     * correctly. To fix this, an additional empty character is added to the
-     * buffer to trigger the UART configuration. */
-    str_format(" ", THEME.PRIMARY_COLOR);
-
     // Wait until the TX FIFO is empty
     while (!(UART0_FR & UART0_FR_TXFE)) {
       // Wait until the TX FIFO is empty
     }
 
-    // Reinitialize UART
-    uart_init();
-    IS_REINIT_UART = 0;
+    // Check if UART configuration is needed
+    if (IS_REINIT_UART == 1) {
+      index = len(cli_buffer); // Set the index to the end of the buffer
+
+      /*
+      I observed that the UART configuration is not working properly if there is
+      no newline character after the uart initialization. To fix this, I added a
+      newline character after the UART initialization. This is a temporary fix
+      and I will look into it later.
+      */
+      str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
+      str_format(" ", THEME.PRIMARY_COLOR);  // Print a space
+
+      // Reinitialize UART
+      uart_init();
+
+      // Reset the flag
+      IS_REINIT_UART = 0;
+    }
+    is_new_command = 0;
+    history_index = -1;
   }
 
   // Get command from user
@@ -175,7 +176,7 @@ int main() {
   uart_init(); // Initialize UART
   os_greet();  // Show welcome message
 
-  while (1) {
+  while (True) {
     uart_puts(THEME.BACKGROUND_COLOR); // Set background color
     cli();                             // Get command from user
   }

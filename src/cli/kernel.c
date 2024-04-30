@@ -7,16 +7,16 @@ void clear_current_command() {
 
   // Show prompt
   str_format("BrightOS> ", THEME.PRIMARY_COLOR);
+  // uart_puts("BrightOS> ");
 }
 
 // CLI function to get the command from the user
 void cli() {
-  static char cli_buffer[MAX_CMD_SIZE] = {0}; // Buffer to store the command
-  static int index = 0;          // Index to keep track of the buffer
+  static char cli_buffer[MAX_CMD_SIZE]; // Buffer to store the command
+  static int index = 0;                 // Index to keep track of the buffer
   static int is_new_command = 1; // Flag to check if a new command is entered
   static int history_index = -1; // Index to keep track of command history
   static int was_down = 0; // Check if the current move up after a move down
-  static int is_config_uart = 0; // Check if the UART needs to be reinitialized
 
   // Show prompt only if new command
   if (is_new_command) {
@@ -26,31 +26,33 @@ void cli() {
     }
 
     str_format("BrightOS> ", THEME.PRIMARY_COLOR);
+    // uart_puts("BrightOS> "/);
 
     // Wait until the TX FIFO is empty
-    while (!(UART0_FR & UART0_FR_TXFE)) {
-      // Wait until the TX FIFO is empty
-    }
+    // while (!(UART0_FR & UART0_FR_TXFE)) {
+    //   // Wait until the TX FIFO is empty
+    // }
 
-    // Check if UART configuration is needed
-    if (IS_REINIT_UART == 1) {
-      index = len(cli_buffer); // Set the index to the end of the buffer
+    // // Check if UART configuration is needed
+    // if (IS_REINIT_UART == 1) {
+    //   index = len(cli_buffer); // Set the index to the end of the buffer
 
-      /*
-      I observed that the UART configuration is not working properly if there is
-      no newline character after the uart initialization. To fix this, I added a
-      newline character after the UART initialization. Although unexpected
-      behavior might be seen on QEMU, it works fine on real hardware.
-      */
-      str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
-      str_format(" ", THEME.PRIMARY_COLOR);  // Print a space
+    //   /*
+    //   I observed that the UART configuration is not working properly if there
+    //   is no newline character after the uart initialization. To fix this, I
+    //   added a newline character after the UART initialization. Although
+    //   unexpected behavior might be seen on QEMU, it works fine on real
+    //   hardware.
+    //   */
+    //   // str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
+    //   // str_format(" ", THEME.PRIMARY_COLOR);  // Print a space
 
-      // Reinitialize UART
-      uart_init();
+    //   // Reinitialize UART
+    //   uart_init();
 
-      // Reset the flag
-      IS_REINIT_UART = 0;
-    }
+    //   // Reset the flag
+    //   IS_REINIT_UART = 0;
+    // }
     is_new_command = 0;
     history_index = -1;
   }

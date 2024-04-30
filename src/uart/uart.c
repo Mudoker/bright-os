@@ -74,7 +74,7 @@ void uart_init() {
   /* Set up the Line Control Register */
   // Clean previous settings
   UART0_LCRH = 0;
-  UART0_LCRH = UART0_LCRH_FEN; // Enable FIFO
+  UART0_LCRH = UART0_LCRH_FEN;
 
   // Set data bits
   if (DATA_BITS_CONFIG == 5) {

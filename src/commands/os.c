@@ -864,11 +864,11 @@ void parse_command(char *input) {
         }
       }
 
-      if (IS_REINIT_UART) {
-        // Reinitialize the UART
-        uart_init();
-        IS_REINIT_UART = 0;
-      }
+      // if (IS_REINIT_UART) {
+      //   // Reinitialize the UART
+      //   uart_init();
+      //   IS_REINIT_UART = 0;
+      // }
 
     } else {
       show_status(1,

@@ -10,7 +10,7 @@ BaudRateConfig BAUD_RATE_CONFIG = {
 // State of the UART
 int IS_REINIT_UART = 0;      // UART reinitialization state
 int DATA_BITS_CONFIG = 8;    // Data bits configuration (default 8 bits)
-int STOP_BIT_CONFIG = 1;     // Stop bit configuration (default 1 bit)
+int STOP_BIT_CONFIG = 2;     // Stop bit configuration (default 2 bit)
 int PARITY_CONFIG = 0;       // Parity configuration (default None)
 int HANDSHAKE_CONFIG = 0;    // Handshake configuration (default None)
 int IS_CONFIG_BAUD_RATE = 0; // Baud rate configuration state
@@ -74,17 +74,16 @@ void uart_init() {
   /* Set up the Line Control Register */
   // Clean previous settings
   UART0_LCRH = 0;
-  UART0_LCRH = UART0_LCRH_FEN;
 
   // Set data bits
   if (DATA_BITS_CONFIG == 5) {
-    UART0_LCRH |= UART0_LCRH_WLEN_5BIT;
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
   } else if (DATA_BITS_CONFIG == 6) {
-    UART0_LCRH |= UART0_LCRH_WLEN_6BIT;
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
   } else if (DATA_BITS_CONFIG == 7) {
-    UART0_LCRH |= UART0_LCRH_WLEN_7BIT;
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
   } else if (DATA_BITS_CONFIG == 8) {
-    UART0_LCRH |= UART0_LCRH_WLEN_8BIT;
+    UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
   }
 
   // Set stop bits

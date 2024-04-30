@@ -196,9 +196,9 @@ void show_status(int status, char *msg) {
   }
 
   // Print the status message
-  str_format("\n", THEME.SECONDARY_COLOR);
+  str_format("\n\n", THEME.SECONDARY_COLOR);
   str_format(msg, color);
-  str_format("\n", THEME.SECONDARY_COLOR);
+  str_format("\n\n", THEME.SECONDARY_COLOR);
 }
 
 // Display help menu
@@ -784,7 +784,7 @@ void parse_command(char *input) {
           show_status(0, "Baud rate set successfully.");
           IS_REINIT_UART = 1;
         } else if (is_equal(target, "dbits") || is_equal(target, "dbs")) {
-          DATA_BITS_CONFIG = string_to_int(option);
+          int val = string_to_int(option);
 
           // Data bits must be between 5 and 8
           if (DATA_BITS_CONFIG < 5 || DATA_BITS_CONFIG > 8) {
@@ -792,6 +792,7 @@ void parse_command(char *input) {
                 1, "Invalid data bits. Data bits must be between 5 and 8.");
             return;
           }
+          DATA_BITS_CONFIG = val;
 
           // SUCCESS_COLOR message
           show_status(0, "Data bits set successfully.");
@@ -863,13 +864,6 @@ void parse_command(char *input) {
           return;
         }
       }
-
-      // if (IS_REINIT_UART) {
-      //   // Reinitialize the UART
-      //   uart_init();
-      //   IS_REINIT_UART = 0;
-      // }
-
     } else {
       show_status(1,
                   "Invalid command. Type 'help ref' to see available targets.");

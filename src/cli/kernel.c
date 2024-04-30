@@ -7,7 +7,6 @@ void clear_current_command() {
 
   // Show prompt
   str_format("BrightOS> ", THEME.PRIMARY_COLOR);
-  // uart_puts("BrightOS> ");
 }
 
 // CLI function to get the command from the user
@@ -44,8 +43,10 @@ void cli() {
       unexpected behavior might be seen on QEMU, it works fine on real
       hardware.
       */
-      str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
-      str_format(" ", THEME.PRIMARY_COLOR);  // Print a space
+      if (IS_CONFIG_BAUD_RATE == 1) {
+        str_format("\n", THEME.SUCCESS_COLOR); // Print a newline
+        str_format(" ", THEME.PRIMARY_COLOR);  // Print a space
+      }
 
       // Reinitialize UART
       uart_init();
@@ -163,9 +164,7 @@ void cli() {
       push_command(&command_stack, cli_buffer);
 
       // Parse the command from the buffer and execute
-      uart_puts("\n");
       parse_command(cli_buffer);
-      uart_puts("\n");
 
       // Reset the flag and index
       index = 0;
